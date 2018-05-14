@@ -1,0 +1,81 @@
+@font-face {
+  font-family: 'Young Serif';
+  src: url('resources/YoungSerif-Regular.otf');
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('resources/Work-Sans-1.6/fonts/webfonts/woff2/WorkSans-Regular.woff2')
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: "Young Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  color: white;
+  font-size: 30px;
+}
+
+h1 {
+  font-family: "Young Serif", "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 3em;
+}
+
+h3 {
+  padding: 0px;
+  margin: 0px;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+p {
+  padding: 0px;
+  margin: 0px;
+  font-size: 20px;
+}
+
+input,
+select,
+textarea {
+  font-size: 20px;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.input {
+  padding: 0px;
+  margin: 0px;
+}
+
+
+#competencies {
+  font-size: 0.5em;
+}
+
+#main {
+  padding: 10px;
+  margin: 10px;
+}
+
+#gradient {
+  min-height: 100%;
+  padding: 0px;
+  margin: 0px;
+  background: linear-gradient(to bottom right, #62ff84, #bee);
+}
+
+#submit {
+  font-size: 4em;
+  font-family: "Young Serif";
+  color: white;
+  background-color: #09c632;
+  border: none;
+  /*border: 2px solid yellow;*/
+  padding: 32px 25px;
+  border-radius: 12px;
+}
+
+.hidden {
+  display: none;
+}
