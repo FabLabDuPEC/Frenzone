@@ -44,17 +44,37 @@ function saveUser() {
     }
   });
   var newUser = { // create new user object
-    "firstName": newUserForm.firstName.value,
-    "lastName": newUserForm.lastName.value,
-    "memberType": newUserForm.memberType.value,
-    "skills": skills
-  }
+    "firstName": form.firstName.value,
+    "lastName": form.lastName.value,
+    "phone": form.phone.value,
+    "email": form.email.value,
+    "postalCode": form.postalCode.value,
+    "memberType": form.memberType.value,
+    "hadAlreadyVisitedALab": form.dejaFabLab.value,
+    "referral": form.commentEntendu.value,
+    "skills": skills,
+  };
   console.log("new user:");
   console.log(newUser);
-  // load file from disk
-  // if phone or email is already in db, refuse to submit
-  // else save to file
-  alert("Vous êtes maintenant membre du Fab Lab du PEC !")
+
+  var anonData = {
+    "gender": form.gender.value,
+    "expectations": form.expectations.value,
+    "maritalStatus": form.maritalStatus.value,
+    "headOfHousehold": form.chefDeFam.value,
+    "origin": form.ethnicOrigin.value,
+    "schoolLevel":form.schoolLevel.value,
+    "workStatus": form.workStatus.value,
+    "annualRevenue": form.annualRevenue.value,
+    "residence": form.residence.value,
+    "activityAtPEC": form.activity.value
+  }; 
+  // TKTK finish anonymous data collection
+  console.log("anon data:");
+  console.log(anonData);
+  // post data to backend
+  // if backend replies that phone or email is already in db, refuse to submit
+  // else success message and reset screen
 }
 
 
@@ -63,18 +83,18 @@ function saveUser() {
 
 
 // var newObj = 
-// {	"name": "Nicholas", 
-// 	"type": "regul	ar member", 
-// 	"projects": {
-// 		"camera glasses" : {
-// 			"skills" : ["Blender","Github", "CNC 3D forms", "electronics", "Eagle", "CNC PCB"],
-// 			"dates worked on" : ["2015-12-01", "2016-01-31"]
-// 		},
-// 		"microscopic 3D reconstruction": {
-// 			"skills" : ["microscopy", "motors", "Reality Capture", "photogrammetry", "laser cutting"],
-// 			"dates worked on" : ["2018-04-15", "2018-05-01"]
-// 		}
-// 	}
+// {  "name": "Nicholas", 
+//  "type": "regul  ar member", 
+//  "projects": {
+//    "camera glasses" : {
+//      "skills" : ["Blender","Github", "CNC 3D forms", "electronics", "Eagle", "CNC PCB"],
+//      "dates worked on" : ["2015-12-01", "2016-01-31"]
+//    },
+//    "microscopic 3D reconstruction": {
+//      "skills" : ["microscopy", "motors", "Reality Capture", "photogrammetry", "laser cutting"],
+//      "dates worked on" : ["2018-04-15", "2018-05-01"]
+//    }
+//  }
 // }
 
 // console.log(newObj);
@@ -92,7 +112,7 @@ function saveUser() {
 /*
 // ACCESSING PROPERTIES OF UNKNOWN OBJECT
 for (i in x){
-	x.elements[i].value 
+  x.elements[i].value 
 }
 
 

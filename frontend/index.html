@@ -22,7 +22,7 @@
         <p>Addresse courriel</p>
         <input class="input" name="email" type="email" placeholder="fablabdupec@gmail.com" autcomplete="false" required>
         <p>Code Postale</p>
-        <input class="input" name="postal code" type="text" placeholder="H2H 1G9" autcomplete="false" required>
+        <input class="input" name="postalCode" type="text" placeholder="H2H 1G9" autcomplete="false" required>
         <br>
         <h3>Type de membre</h3>
         <select name="memberType">
@@ -52,10 +52,9 @@
         <h3>Statistiques anonymes pour le Pavillon d'Éducation Communautaire</h3>
         <p>La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de tout donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ta salaire ou genre !</p>
         <br>
-        <p>Comment avez-vous connu le PEC?</p>
+        <!-- <p>Comment avez-vous connu le PEC?</p>
         <textarea class="input pec" name="connuLePec" placeholder="J'ai connu le PEC grâce à..." autocomplete="false" rows=3 cols=60></textarea>
-        <br>
-        <!-- <input class="input pec" name="connuLePec" type="text" placeholder="J'ai connu le PEC grâce à..." autocomplete="false" size=100> -->
+        <br> -->
         <p>Quels sont vos attentes façe à l'organisme?</p>
         <textarea class="input pec" name="expectations" placeholder="Au PEC j'attends à..." autocomplete="false" rows=3 cols=60></textarea>
         <br>
@@ -82,9 +81,9 @@
         </select>
         <br>
         <p>Origine ethnique si autre que québecoise</p>
-        <input class="input" name="origine ethnique" type="text" placeholder="..." autcomplete="false">
+        <input class="input" name="ethnicOrigin" type="text" placeholder="..." autcomplete="false">
         <p>Niveau de scolarité</p>
-        <select name="niveauScolar">
+        <select name="schoolLevel">
           <option value="primaire">primaire</option>
           <option value="secondaire">secondaire</option>
           <option value="collégiale">collégiale</option>
@@ -92,7 +91,7 @@
         </select>
         <br>
         <p>Que faites vous presentement?</p>
-        <select name="presentement">
+        <select name="workStatus">
           <option value="accident">Accidenté de travail</option>
           <option value="chomeur">Chomeur</option>
           <option value="travailleur">Travailleur</option>
@@ -102,7 +101,7 @@
           <option value="sans emploi">Sans emploi</option>
         </select>
         <p>Quel est votre revenue annuel</p>
-        <select name="revenueAnnuel">
+        <select name="annualRevenue">
           <option value="-4000">&lt;$4 000</option>
           <option value="4000-9000">$4 000- $9 000</option>
           <option value="9000-19000">$9 000-10 000</option>
@@ -119,8 +118,8 @@
           <option value="chambrePension">Chambre/Pension</option>
         </select>
         <p class="hidden">Dans quel activité êtes-vous inscrite?</p>
-        <select class="hidden" name="activite">
-          <option value="fablab">Fab Lab</option>
+        <select class="hidden" name="activity">
+          <option value="fab lab">Fab Lab</option>
         </select>
         <br>
         <br>
@@ -133,10 +132,10 @@
 </html>
 <!-- 
 <h3>Nom du projet</h3>
-		<input name="projet" type="text" placeholder="Cerf volant">
-		<br>
-		<select name="competences">
-			<option value="decouper au laser">decouper au laser</option>
-			<option value="imprimer avec l'imprimante 3d">imprimer avec l'imprimante 3d</option>
-		</select> 
+    <input name="projet" type="text" placeholder="Cerf volant">
+    <br>
+    <select name="competences">
+      <option value="decouper au laser">decouper au laser</option>
+      <option value="imprimer avec l'imprimante 3d">imprimer avec l'imprimante 3d</option>
+    </select> 
 -->
