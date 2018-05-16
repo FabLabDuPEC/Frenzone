@@ -63,22 +63,29 @@ function saveUser() {
     "maritalStatus": form.maritalStatus.value,
     "headOfHousehold": form.chefDeFam.value,
     "origin": form.ethnicOrigin.value,
-    "schoolLevel":form.schoolLevel.value,
+    "schoolLevel": form.schoolLevel.value,
     "workStatus": form.workStatus.value,
     "annualRevenue": form.annualRevenue.value,
     "residence": form.residence.value,
     "activityAtPEC": form.activity.value
-  }; 
-  // TKTK finish anonymous data collection
+  };
   console.log("anon data:");
   console.log(anonData);
-  // post data to backend
-  // if backend replies that phone or email is already in db, refuse to submit
-  // else success message and reset screen
+
+  // configure and send POST request to server
+  // var userData = [newUser, anonData];
+  var userData = [newUser, anonData];
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/saveUser"); // Configures the post request, with async default to true: XMLHttpRequest.open(method, url, async)
+  xhr.setRequestHeader("Content-type", "application/json"); // content type is application/json NOT application/javascript 
+  xhr.onreadystatechange = function() { //Call a function when the state changes.
+    if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+      console.log("Post request complete."); // Request finished.
+      console.log(this.responseText); // print server's reply to console
+    }
+  }
+  xhr.send(JSON.stringify(userData)); // send post request to server
 }
-
-
-
 
 
 
