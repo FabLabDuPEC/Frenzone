@@ -1,81 +1,174 @@
 @font-face {
-  font-family: 'Young Serif';
-  src: url('resources/YoungSerif-Regular.otf');
+    font-family: 'Young Serif';
+    src: url('resources/YoungSerif-Regular.otf');
 }
 
 @font-face {
-  font-family: 'Work Sans';
-  src: url('resources/Work-Sans-1.6/fonts/webfonts/woff2/WorkSans-Regular.woff2')
+    font-family: 'Work Sans';
+    src: url('resources/Work-Sans-1.6/fonts/webfonts/woff2/WorkSans-Regular.woff2')
 }
 
 html,
 body {
-  margin: 0;
-  height: 100%;
-  font-family: "Young Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-style: normal;
-  color: white;
-  font-size: 30px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-style: normal;
+    color: black;
+    font-size: 30px;
+}
+
+html {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0px;
+    min-height: 100%;
+    width: 100%;
 }
 
 h1 {
-  font-family: "Young Serif", "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 3em;
+    font-family: "Young Serif", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 3em;
+    text-align: right;
+    padding: 10px;
+/*    border: 1px solid;
+    box-shadow: 6px 10px;
+    background-color: #84ffa8;*/
+}
+
+#headerTitle {
+    /*align-self:flex-end;*/
 }
 
 h3 {
-  padding: 0px;
-  margin: 0px;
-  margin-top: 10px;
-  margin-bottom: 3px;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 2px 5px;
+    background-color: #84ffa8;
 }
 
 p {
-  padding: 0px;
-  margin: 0px;
-  font-size: 20px;
+    padding: 0px;
+    margin: 0px;
+    font-size: 20px;
 }
 
 input,
 select,
 textarea {
-  font-size: 20px;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 20px;
+    font-family: "Work Sans", "Helvetica Neue", Helvetica, sans-serif;
+    border-radius: 3px;
+}
+
+label {
+    font-size: 20px;
 }
 
 .input {
-  padding: 0px;
-  margin: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 
 #competencies {
-  font-size: 0.5em;
+    font-size: 0.5em;
 }
 
 #main {
-  padding: 10px;
-  margin: 10px;
+    padding: 10px;
+    margin: 10px;
+    width: 900px;
+}
+
+#main>form {
+    float: left;
 }
 
 #gradient {
-  min-height: 100%;
-  padding: 0px;
-  margin: 0px;
-  background: linear-gradient(to bottom right, #62ff84, #bee);
+    min-height: 100%;
+    padding: 0px;
+    margin: 0px;
+    background: linear-gradient(to bottom right, #62ff84, #bee);
+}
+
+.extraSpaceTop {
+    padding-top: 13px;
 }
 
 #submit {
-  font-size: 4em;
-  font-family: "Young Serif";
-  color: white;
-  background-color: #09c632;
-  border: none;
-  /*border: 2px solid yellow;*/
-  padding: 32px 25px;
-  border-radius: 12px;
+    font-size: 20px;
+    font-family: "Young Serif";
+    color: white;
+    background-color: #09c632;
+    border: none;
+    padding: 10px 5px;
+    border-radius: 3px;
+    float: right;
 }
 
 .hidden {
-  display: none;
+    display: none;
+}
+
+input:invalid {
+    /*background-color: #ffdddd;*/
+}
+
+input:required {}
+
+input:required:invalid {
+    border-color: #ff0000;
+    border-width:3px;
+}
+
+input:valid {}
+
+input:placeholder-shown {
+    border-color: #000;
+}
+
+.smallerText {
+    font-size: .5em;
+}
+
+
+input[type="radio"] {
+    font-size: 20px;
+}
+
+.scrollbox {
+    height: 200px;
+    overflow-x: scroll;
+}
+
+.question {
+    padding: 4px;
+}
+
+#newUserForm {
+    max-width: 700px;
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+.flexContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.flexRight {
+    align-self: flex-end;
+}
+
+.flexCenter {
+  align-self: center;
 }

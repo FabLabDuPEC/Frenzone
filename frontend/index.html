@@ -2,140 +2,182 @@
 <html>
 
 <head>
-  <title>fab lab inscription v0.2</title>
-  <script type="text/javascript" src="index.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css"></link>
+    <title>Fab Lab Frenzone v3</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 
 <body>
-  <div id="gradient">
-    <div id="main">
-      <h1>Abonnez-vous au Fab Lab du PEC</h1>
-      <form id="newUserForm">
-        <h3>Donnés personneles</h3>
-        <p>Prénom</p>
-        <input class="input" name="firstName" type="text" placeholder="Prenom" autocomplete="false" required>
-        <p>Nom</p>
-        <input class="input" name="lastName" type="text" placeholder="Nom" autocomplete="false" required>
-        <p>Numéro de téléphone</p>
-        <input class="input" name="phone" type="tel" placeholder="514-555-5555" autocomplete="false" required>
-        <p>Addresse courriel</p>
-        <input class="input" name="email" type="email" placeholder="fablabdupec@gmail.com" autcomplete="false" required>
-        <p>Code Postale</p>
-        <input class="input" name="postalCode" type="text" placeholder="H2H 1G9" autcomplete="false" required>
-        <br>
-        <h3>Type de membre</h3>
-        <select name="memberType">
-          <option value="normale">Normale</option>
-          <option value="ado">Fab Lab ADOS</option>
-        </select>
-        <p>Avez-vous déjà visité un fab lab ou atelier communautaire?</p>
-        <select name="dejaFabLab">
-          <option value="ouiMontreal">Oui, à Montréal</option>
-          <option value="ouiAilleur">Oui, hors de Montréal</option>
-          <option value="non">Non</option>
-        </select>
-        <p>Comment avez vous connu le Fab Lab du PEC?</p>
-        <select name="commentEntendu">
-          <option value="pec">Le PEC</option>
-          <option value="ecole">À l'école</option>
-          <option value="ami">Un(e) ami(e)</option>
-          <option value="atelier">Un atelier</option>
-          <option value="autreFabLab">Une autre Fab Lab</option>
-          <option value="biblio">Une bibliothèque</option>
-          <option value="article">Un article</option>
-        </select>
-        <h3>Mes Compétences</h3>
-        <p>Je suis autosuffisant a...</p>
-        <div id="competencies">
+    <div id="gradient">
+        <div class="flexContainer">
+            <div id="main" class="clearfix flexContainer flexCenter">
+                <h1 id="headerTitle" class="flexRight">Inscrivez-vous au
+              <br/>
+            Fab Lab du PEC</h1>
+                <form id="newUserForm" class="flexLeft">
+                    <h3>Données personnelles</h3>
+                    <div class="question">
+                        <label for="firstName">Prénom</label>
+                        <input class="input" name="firstName" id="firstName" type="text" placeholder="Prenom" autocomplete="false" required>
+                    </div>
+                    <div class="question">
+                        <label for="lastName">Nom</label>
+                        <input class="input" name="lastName" id="lastName" type="text" placeholder="Nom" autocomplete="false" required>
+                    </div>
+                    <div class="question">
+                        <label for="phone">Téléphone</label>
+                        <input class="input" name="phone" id="phone" type="tel" placeholder="514-555-5555" autocomplete="false" required>
+                    </div>
+                    <div class="question">
+                        <label for="email">Addresse courriel</label>
+                        <input class="input" name="email" id="email" type="email" placeholder="fablabdupec@gmail.com" autcomplete="false" required>
+                    </div>
+                    <div class="question">
+                        <label for="birthDate">Date de naissance</label>
+                        <input class="input" name="birthDate" id="birthDate" type="date" required>
+                    </div>
+                    <div class="question">
+                        <label for="postalCode">Code Postale</label>
+                        <input class="input" name="postalCode" id="postalCode" type="text" placeholder="H2H 1G9" autcomplete="false" required pattern="[A-Z|a-z][0-9][A-Z|a-z][ -]?[0-9][A-Z|a-z][0-9]|[0-9]{5}">
+                        <!-- match canadian postal code or us zip code -->
+                    </div>
+                    <div class="question">
+                        <label for="memberType">Type de membre</label>
+                        <select name="memberType" id="memberType">
+                            <option value="normale">Normale</option>
+                            <option value="ado">Fab Lab ADOS</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="dejaFabLab">Avez-vous déjà visité un fab lab ou atelier communautaire?</label>
+                        <select name="dejaFabLab" id="dejaFabLab">
+                            <option value="ouiMontreal">Oui, à Montréal</option>
+                            <option value="ouiAilleur">Oui, hors de Montréal</option>
+                            <option value="non">Non</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="commentEntendu">Comment avez vous connu le Fab Lab du PEC?</label>
+                        <select name="commentEntendu" id="commentEntendu">
+                            <option value="pec">Le PEC</option>
+                            <option value="ecole">À l'école</option>
+                            <option value="ami">Un(e) ami(e)</option>
+                            <option value="atelier">Un atelier</option>
+                            <option value="autreFabLab">Une autre Fab Lab</option>
+                            <option value="biblio">Une bibliothèque</option>
+                            <option value="article">Un article</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="profileVisible">Aimeriez vous que votre profil soit visibles aux autres membres du Fab Lab?</label>
+                        <div class="smallerText">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</div>
+                        <div class="question" required>
+                            <input type="radio" name="profileVisible" value="true" required>
+                            <label for="profileVisible">Oui, j'aimerais que d'autres membres puisse voir mes projets publics</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="profileVisible" value="false" required>
+                            <label for="profileVisible">Non, j'aimerais que mon profil reste entièrement privé</label>
+                        </div>
+                    </div>
+                    <h3>Mes Compétences</h3>
+                    <div class="question">
+                        <label for="competencies">Je suis autosuffisant a...</label>
+                        <div id="competencies" class="scrollbox">
+                        </div>
+                    </div>
+                    <div class="question">
+                        <h3>Statistiques anonymes pour le Pavillon d'Éducation Communautaire</h3>
+                        <p class="smallerText extraSpaceTop">La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de tout donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ta salaire ou genre !</p>
+                    </div>
+                    <div class="question">
+                        <label for="expectations">Quels sont vos attentes façe à l'organisme?</label>
+                        <textarea class="input pec" name="expectations" id="expectations" placeholder="Au PEC j'attends à..." autocomplete="false" rows=3 cols=60></textarea>
+                    </div>
+                    <div class="question">
+                        <label for="gender">Genre</label>
+                        <select name="gender" id="gender">
+                            <option value="autre">autre</option>
+                            <option value="femme">femme</option>
+                            <option value="homme">homme</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="maritalStatus">Quel est votre status sociale?</label>
+                        <select name="maritalStatus" id="maritalStatus">
+                            <option value="marié">marié</option>
+                            <option value="celibataire">celibataire</option>
+                            <option value="veuf/ve">veuf/ve</option>
+                            <option value="divorcé">divorcé</option>
+                            <option value="union libre">union libre</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="chefDeFam">Êtes-vous presentement chef de famille monoparentale</label>
+                        <select name="chefDeFam" id="chefDeFam">
+                            <option value="oui">oui</option>
+                            <option value="non">non</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="ethnicOrigin">Origine ethnique si autre que québecoise</label>
+                        <input class="input" name="ethnicOrigin" id="ethnicOrigin" type="text" placeholder="..." autcomplete="false">
+                    </div>
+                    <div class="question">
+                        <label for="schoolLevel">Niveau de scolarité</label>
+                        <select name="schoolLevel" id="schoolLevel">
+                            <option value="primaire">primaire</option>
+                            <option value="secondaire">secondaire</option>
+                            <option value="collégiale">collégiale</option>
+                            <option value="universitaire">universitaire</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="workStatus">Que faites vous resentement?</label>
+                        <select name="workStatus" id="workStatus">
+                            <option value="accident">Accidenté de travail</option>
+                            <option value="chomeur">Chomeur</option>
+                            <option value="travailleur">Travailleur</option>
+                            <option value="etudiant">Étudiant</option>
+                            <option value="menageur">Ménageur</option>
+                            <option value="retraite">Retraité</option>
+                            <option value="sans emploi">Sans emploi</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="annualRevenue">Quel est votre revenue annuel</label>
+                        <select name="annualRevenue" id="annualRevenue">
+                            <option value="-4000">&lt;$4 000</option>
+                            <option value="4000-9000">$4 000- $9 000</option>
+                            <option value="9000-19000">$9 000-10 000</option>
+                            <option value="19000-25000">$19 000 - $25 000</option>
+                            <option value="25000+">$25 000+</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="residence">Dans votre residence, êtes vous?</label>
+                        <select name="residence" id="residence">
+                            <option value=" proprietaire">propriétaire</option>
+                            <option value="locataire">locataire</option>
+                            <option value="HLM">HLM</option>
+                            <option value="membre">Membre</option>
+                            <option value="coop">Coop</option>
+                            <option value="chambrePension">Chambre/Pension</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label for="activity" class="hidden">Dans quel activité êtes-vous inscrite?</label>
+                        <select class="hidden" name="activity" id="activity">
+                            <option value="fab lab">Fab Lab</option>
+                        </select>
+                    </div>
+                    <input id="submit" type="button" onclick="saveUser()" value="Submit">
+                </form>
+            </div>
         </div>
-        <h3>Statistiques anonymes pour le Pavillon d'Éducation Communautaire</h3>
-        <p>La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de tout donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ta salaire ou genre !</p>
-        <br>
-        <!-- <p>Comment avez-vous connu le PEC?</p>
-        <textarea class="input pec" name="connuLePec" placeholder="J'ai connu le PEC grâce à..." autocomplete="false" rows=3 cols=60></textarea>
-        <br> -->
-        <p>Quels sont vos attentes façe à l'organisme?</p>
-        <textarea class="input pec" name="expectations" placeholder="Au PEC j'attends à..." autocomplete="false" rows=3 cols=60></textarea>
-        <br>
-        <p>Genre</p>
-        <select name="gender">
-          <option value="autre">autre</option>
-          <option value="femme">femme</option>
-          <option value="homme">homme</option>
-        </select>
-        <br>
-        <p>Quel est votre status sociale?</p>
-        <select name="maritalStatus">
-          <option value="marié">marié</option>
-          <option value="celibataire">celibataire</option>
-          <option value="veuf/ve">veuf/ve</option>
-          <option value="divorcé">divorcé</option>
-          <option value="union libre">union libre</option>
-        </select>
-        <br>
-        <p>Êtes-vous presentement chef de famille monoparentale</p>
-        <select name="chefDeFam">
-          <option value="oui">oui</option>
-          <option value="non">non</option>
-        </select>
-        <br>
-        <p>Origine ethnique si autre que québecoise</p>
-        <input class="input" name="ethnicOrigin" type="text" placeholder="..." autcomplete="false">
-        <p>Niveau de scolarité</p>
-        <select name="schoolLevel">
-          <option value="primaire">primaire</option>
-          <option value="secondaire">secondaire</option>
-          <option value="collégiale">collégiale</option>
-          <option value="universitaire">universitaire</option>
-        </select>
-        <br>
-        <p>Que faites vous presentement?</p>
-        <select name="workStatus">
-          <option value="accident">Accidenté de travail</option>
-          <option value="chomeur">Chomeur</option>
-          <option value="travailleur">Travailleur</option>
-          <option value="etudiant">Étudiant</option>
-          <option value="menageur">Ménageur</option>
-          <option value="retraite">Retraité</option>
-          <option value="sans emploi">Sans emploi</option>
-        </select>
-        <p>Quel est votre revenue annuel</p>
-        <select name="annualRevenue">
-          <option value="-4000">&lt;$4 000</option>
-          <option value="4000-9000">$4 000- $9 000</option>
-          <option value="9000-19000">$9 000-10 000</option>
-          <option value="19000-25000">$19 000 - $25 000</option>
-          <option value="25000+">$25 000+</option>
-        </select>
-        <p>Dans votre residence, êtes vous?</p>
-        <select name="residence">
-          <option value="proprietaire">propriétaire</option>
-          <option value="locataire">locataire</option>
-          <option value="HLM">HLM</option>
-          <option value="membre">Membre</option>
-          <option value="coop">Coop</option>
-          <option value="chambrePension">Chambre/Pension</option>
-        </select>
-        <p class="hidden">Dans quel activité êtes-vous inscrite?</p>
-        <select class="hidden" name="activity">
-          <option value="fab lab">Fab Lab</option>
-        </select>
-        <br>
-        <br>
-        <input id="submit" type="button" onclick="saveUser()" value="Submit">
-      </form>
     </div>
-  </div>
 </body>
 
 </html>
-<!-- 
-<h3>Nom du projet</h3>
-    <input name="projet" type="text" placeholder="Cerf volant">
-    <br>
-    <select name="competences">
-      <option value="decouper au laser">decouper au laser</option>
-      <option value="imprimer avec l'imprimante 3d">imprimer avec l'imprimante 3d</option>
-    </select> 
--->
