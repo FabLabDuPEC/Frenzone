@@ -1,13 +1,16 @@
 {
-    "dateCreated": "2018-06-21T17:21:22.526Z",
-    "expectations": "sadf",
-    "gender": "homme",
-    "maritalStatus": "marié",
-    "headOfHousehold": "oui",
-    "origin": "Quebec",
-    "schoolLevel": "primaire",
-    "workStatus": "accident",
-    "annualRevenue": "-4000",
-    "residence": " proprietaire",
-    "activityAtPEC": "fab lab"
+    "anonData": [
+    {
+        "dateCreated": "2018-06-21T17:21:22.526Z",
+        "expectations": "sadf",
+        "gender": "homme",
+        "maritalStatus": "marié",
+        "headOfHousehold": "oui",
+        "origin": "Quebec",
+        "schoolLevel": "primaire",
+        "workStatus": "accident",
+        "annualRevenue": "-4000",
+        "residence": " proprietaire",
+        "activityAtPEC": "fab lab"
+    }]
 }

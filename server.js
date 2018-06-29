@@ -23,70 +23,78 @@ var receive = function(req, res, next) { // receive data from Submit button in s
     console.log("received " + req.body[0].firstName + " data from client");
     res.locals.newUser = req.body[0]; // store new user data from client's form in res object, do not need to JSON.parse
     res.locals.anonData = req.body[1]; // store anonymous data for PEC, do not need to JSON.parse
-    next()
+    next();
 };
-var respond = function(req, res) {
+var respond = function(req, res, next) {
     var newUser = res.locals.newUser;
     var anonData = res.locals.anonData;
     /// TKTKTK remove all the ifs and just return based on whether createUser succeeds
-    if (createUser(newUser == "success")) {
-        // TKTK send response to client : new user created
-        res.send({"status": "success"});
-    } else {
-        //TKTK send response to client: failed 
-        res.send({"status": "failed"});
-    }
+    createUser(newUser, res);
 }
 
 // Create user and write to database
-//TKTKTK assign all properties of new user to an object that gets created
-function createUser(newUser) {
-    fs.readFile('database.json', verify); // callback gets passed err and data
+function createUser(newUser, res) {
+    fs.readFile('db.json', verify); // callback gets passed err and data
 
     function verify(err, data) {
-        if (err) throw err;
-        var database = JSON.parse(data);
-        console.log(database);
-        var userCount = database.numberOfUsers;
-        console.log("Verify: number of users: " + userCount);
-        
-        var IDinDB = function(element) { // function run on every element
-            return element.userID == userCount + 1;
-        };
-        if (database.members.some(IDinDB)) { // return true as soon as any matching element is found
-            throw Error("New User ID # already in Database. Something is funky with the server-side code!");
-            res.send(newUser.firstName + " " + newUser.lastName + " already in the database.");
+        if (err) throw err; // handles readFile error
+        var database = JSON.parse(data); // parse the database
+        if (database.hasOwnProperty('members')) { // check that database is initialized
+            var userCount = database.numberOfUsers;
+            console.log("Verify: number of users already in database: " + userCount);
+            // Check if there is a discrepancy between 
+            var IDinDB = function(element) { // function run on every element
+                return element.userID == userCount + 1;
+            };
+            if (database.members.some(IDinDB)) { // return true as soon as any matching element is found
+                throw Error("Discrepancy between database's user count and number of members. Looks like the next userID # has already been assigned.");
+                res.send("Database error: discrepancy between database user count and number of members in the database. Check db.json.");
+            }
+            var phoneInDB = function(element) { // function run on every element
+                return element.phone == newUser.phone;
+            };
+            if (database.members.some(phoneInDB)) {
+                console.log("New user's phone number " + newUser.phone + " already in database.");
+                res.send(newUser.phone + " already in the database.");
+            } else {
+                write(database, userCount);
+            }
+        } else {
+            console.log("Database is empty. Restore db.json from backup and restart the server.")
+            res.send("Database is empty. Restore db.json from backup and restart the server.")
         }
-        
-        var telephoneInDB = function(element) { // function run on every element
-            return element.telephone == telephone;
-        };
-        if (database.members.some(telephoneInDB)) {
-            throw Error("New user's telephone # already in database.")
-            res.send(newUser.telephone + " already in the database.");
-            // return "telephone duplicate";
-        }
-       
-        write(database, userCount);
     };
 
     function write(database, userCount) {
-        var newUser = { "userID": userCount + 1, "name": name, "color": color, "telephone": telephone };
+        newUser.userID = userCount + 1;
         database.numberOfUsers++; // increment user count in database
         database.members.push(newUser); // add new user to database
         fs.writeFile("db.json", JSON.stringify(database), err => { // write database to disk
             if (err) throw err;
         });
-        console.log("Wrote " + newUser.name + " to database");
-        return ("success");
+        console.log("Wrote " + newUser.firstName + " to database");
+        // console.log(newUser)
+        // write anon data to anonPecDb.json
+        fs.readFile('anonPecDb.json', (err, data) => {
+            if (err) throw err;
+            var anondb = JSON.parse(data); // parse the db
+            console.log("read anonPecDb.json");
+            // console.log(anondb);
+            console.log("adding new user to anondb and writing to disk");
+            anondb.anonData.push(res.locals.anonData)
+            fs.writeFile("anonPecDb.json", JSON.stringify(anondb), err => {
+                if (err) throw err;
+            });
+        });
+        res.status(200).send({ message: "Success, wrote user to database.", redirect: "/success" }); // Send successful response and redirect to client
     };
 }
 
-
-
 app.post('/saveUser', [receive, respond]); // array of functions that sequentially handle the request 
 
-
+app.get('/success', (req, res) => {
+    res.send(__dirname + "/frontend/success.html");
+});
 
 
 
