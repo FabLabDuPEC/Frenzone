@@ -9,14 +9,19 @@
     <link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 
-<body>
-    <div id="gradient">
-        <div class="flexContainer">
-            <div id="main" class="clearfix flexContainer flexCenter">
+<body class="flexContainerColumn">
+    <div id="pathSelect" class="flexFill flexContainerRow">
+        <button id="abonner" class="startButton clearfix" onclick="showSignUp()">M'abonner</button>
+        <button id="connecter" class="startButton clearfix">Me connecter</button>
+    </div>
+    <div id="greenGradient">
+        <button id="backButton" onclick="backButton()">&#8619; Menu</button>
+        <div id="sign-up" class="flexContainerColumn">
+            <div id="main" class="clearfix flexContainerColumn flexCenter">
                 <h1 id="headerTitle" class="flexRight">Inscrivez-vous au
               <br/>
             Fab Lab du PEC</h1>
-                <form id="newUserForm" class="flexLeft">
+                <form id="newUserForm" class="flexLeft flexContainerColumn">
                     <h3>Données personnelles</h3>
                     <div class="question">
                         <label for="firstName">Prénom</label>
@@ -71,8 +76,11 @@
                         </select>
                     </div>
                     <div class="question">
-                        <label for="profileVisible">Aimeriez vous que votre profil soit visibles aux autres membres du Fab Lab?</label>
-                        <div class="smallerText">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</div>
+                        <label for="profileVisible">Aimeriez vous que votre profil soit visibles aux autres membres du Fab Lab?<span class="tooltip">&#9432;
+                                <span class="tooltiptext tooltip-right">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</span>
+                            </span>
+                        </label>
+                        <!--                         <div class="smallerText">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</div> -->
                         <div class="question" required>
                             <input type="radio" name="profileVisible" value="true" required>
                             <label for="profileVisible">Oui, j'aimerais que d'autres membres puisse voir mes projets publics</label>
@@ -173,7 +181,7 @@
                             <option value="fab lab">Fab Lab</option>
                         </select>
                     </div>
-                    <input id="submit" type="button" onclick="saveUser()" value="Submit">
+                    <input id="submit" type="button" onclick="saveUser()" value="Confirmer">
                 </form>
             </div>
         </div>

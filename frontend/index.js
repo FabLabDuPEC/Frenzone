@@ -4,7 +4,18 @@
 $(document).ready(function() {
     drawCompetencies();
     constrainTelInput();
+    $("#greenGradient").toggle();
 });
+
+function showSignUp() {
+    $("#pathSelect").toggle();
+    $("#greenGradient").toggle();
+}
+
+function backButton() {
+    $("#greenGradient").toggle();
+    $("#pathSelect").toggle();
+}
 
 function constrainTelInput() {
     var phones = [{ "mask": "(###) ###-####" }, { "mask": "(###) ###-##############" }];
@@ -48,6 +59,12 @@ function drawCompetencies() {
 // TKTKTK should not trigger if required fields are empty.
 function saveUser() {
     var form = document.getElementById("newUserForm"); // select form
+    // check if form is valid
+    if (!form.checkValidity()) {
+        console.log("fails")
+        alert("Assurez-vous de répondre à toutes les questions mandatoires.");
+        return;
+    }
     var skills = []; // create skills array
     competenciesArray.forEach(function(element) { // for each skill
         var checkbox = document.getElementsByName(element); // get each corresponding checkbox
@@ -57,6 +74,7 @@ function saveUser() {
     });
     var dateCreated = new Date();
     var newUser = { // create new user object
+        "userID": "",
         "firstName": form.firstName.value,
         "lastName": form.lastName.value,
         "dateCreated": dateCreated,
@@ -68,6 +86,8 @@ function saveUser() {
         "hadAlreadyVisitedALab": form.dejaFabLab.value,
         "referral": form.commentEntendu.value,
         "skills": skills,
+        "visits": [dateCreated],
+        "projects": []
     };
     console.log("new user:");
     console.log(newUser);
@@ -100,8 +120,11 @@ function saveUser() {
     xhr.setRequestHeader("Content-type", "application/json"); // content type is application/json NOT application/javascript 
     xhr.onreadystatechange = function() { //Call a function when the state changes.
         if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-            console.log("Post request complete."); // Request finished.
-            console.log(this.responseText); // print server's reply to console
+            // console.log("Post request complete."); // Request finished.
+            var parsed = JSON.parse(this.responseText);
+            console.log(parsed.message); // Print server's reply to console
+            console.log(parsed.redirect); // Print server's redirect path
+            window.location.assign(parsed.redirect); // Redirect to new path  
         }
     }
     xhr.send(JSON.stringify(userData)); // send post request to server
