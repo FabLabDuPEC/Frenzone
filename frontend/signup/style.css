@@ -1,0 +1,327 @@
+@font-face {
+    font-family: 'Young Serif';
+    src: url('../resources/YoungSerif-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../resources/Work-Sans-1.6/fonts/webfonts/woff2/WorkSans-Regular.woff2')
+}
+
+html,
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-style: normal;
+    color: black;
+    font-size: 30px;
+}
+
+html {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0px;
+    min-height: 100%;
+    width: 100%;
+}
+
+h1 {
+    font-family: "Young Serif", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 3em;
+    text-align: right;
+    padding: 10px;
+    /*    border: 1px solid;
+    box-shadow: 6px 10px;
+    background-color: #84ffa8;*/
+}
+
+#headerTitle {
+    /*align-self:flex-end;*/
+}
+
+h3 {
+    padding: 0px;
+    margin: 0px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 2px 5px;
+    background-color: #84ffa8;
+}
+
+p {
+    padding: 0px;
+    margin: 0px;
+    font-size: 20px;
+}
+
+input,
+select,
+textarea {
+    font-size: 20px;
+    font-family: "Work Sans", "Helvetica Neue", Helvetica, sans-serif;
+    border-radius: 3px;
+}
+
+label {
+    font-size: 20px;
+}
+
+.input {
+    padding: 0px;
+    margin: 0px;
+}
+
+
+#competencies {
+    padding: 5px;
+    margin-top: 8px;
+    overflow-x: hidden;
+    border: solid 2px;
+    border-color: #0006;
+    border-radius: 3px;
+    font-size: 24px;
+    margin-top: 8px;
+}
+
+#competencies>div {
+    height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 5px;
+}
+
+#competencies>div:nth-child(2n+1) {
+    background-color: #a8ffc8;
+}
+
+#competencies>div>input {
+    margin-right: 29px;
+    margin-left: 18px;
+}
+
+.extraSpaceTop {
+    padding-top: 13px;
+}
+
+
+.hidden {
+    display: none;
+}
+
+input:invalid {
+    /*background-color: #ffdddd;*/
+}
+
+input:required {}
+
+input:required:invalid {
+    border-color: #ff0000;
+    border-width: 3px;
+}
+
+input:valid {}
+
+input:placeholder-shown {
+    border-color: #000;
+}
+
+.smallerText {
+    font-size: .5em;
+}
+
+
+input[type="radio"] {
+    font-size: 20px;
+}
+
+.scrollbox {
+    height: 200px;
+    overflow-x: scroll;
+}
+
+.question {
+    padding: 4px;
+}
+
+#newUserForm {
+    max-width: 700px;
+}
+
+#expectations {
+    padding: 5px;
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+#main {
+    padding: 10px;
+    margin: 10px;
+    width: 900px;
+}
+
+#main>form {
+    float: left;
+}
+
+#greenGradient {
+    min-height: 100%;
+    padding: 0px;
+    margin: 0px;
+    background: linear-gradient(to bottom right, #62ff84, #bee);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.flexContainerColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.flexContainerRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    /*align-items: stretch;*/
+}
+
+.flexRight {
+    align-self: flex-end;
+}
+
+.flexCenter {
+    align-self: center;
+}
+
+.flexFill {
+    flex: 1;
+}
+
+.tooltip {
+    position: relative;
+    /*display: inline-block;*/
+    border-bottom: 1px dotted #ccc;
+    color: #006080;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    position: absolute;
+    width: 400px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-right {
+    top: -5px;
+    left: 125%;
+}
+
+.tooltip-right::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #555 transparent transparent;
+}
+
+#sign-up {
+    flex: 1;
+}
+
+#pathSelect {}
+
+.startButton {
+    font-family: "Young Serif", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 80px;
+    background-color: white;
+    border-radius: 5px;
+    transition: background-color .1s;
+    border: none;
+    flex: 1;
+}
+
+.startButton:hover {
+    background-color: orange;
+}
+
+#signupButton {
+    background-color: #ccffd6;
+}
+
+#signupButton:hover {
+    background-color: #62ff84;
+}
+
+#loginButton {
+    background-color: #d3daff;
+}
+
+#loginButton:hover {
+    background-color: #aab8ff;
+}
+
+#backButton {
+    font-size: 30px;
+    font-family: "Young Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #d3daff;
+    border-radius: 5px;
+    margin: 12px;
+    border: 1px solid;
+    padding: 18px 12px;
+    box-shadow: 2px 2px;
+    align-self: flex-start;
+    transition: background-color .1s;
+}
+
+#backButton:hover {
+    background-color: #aab8ff;
+    flex-shrink: 0;
+}
+
+#backButton:active{
+    background-color: #8897e2
+}
+
+#submit {
+    font-size: 45px;
+    font-family: "Young Serif";
+    background-color: #d3daff;
+    padding: 21px;
+    border-radius: 3px;
+    box-shadow: 2px 2px;
+    border: solid 1px;
+    margin-top: 30px;
+    transition: background-color .1s;
+}
+
+#submit:hover {
+    background-color: #aab8ff;
+}
+
+#submit:active {
+    background-color: #8897e2;
+}

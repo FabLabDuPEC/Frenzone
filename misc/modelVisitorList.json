@@ -1,0 +1,33 @@
+{
+    "visits": [
+    {
+        "date": "2018-06-27",
+        "numVisitors": "2",
+        "visitorList": [
+        {
+            "user": "1",
+            "time": "UTCTIME",
+            "accompanied": "2"
+        },
+        {
+            "user": "2",
+            "time": "UTCTIME",
+            "accompanied": "0"
+        }]
+    },
+    {
+        "date": "2018-06-27",
+        "numVisitors": "2",
+        "visitorList": [
+        {
+            "user": "1",
+            "time": "UTCTIME",
+            "accompanied": "1"
+        },
+        {
+            "user": "2",
+            "time": "UTCTIME",
+            "accompanied": "0"
+        }]
+    }]
+}

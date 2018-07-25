@@ -1,0 +1,25 @@
+{
+    "userID": "1",
+    "firstName": "Nico",
+    "lastName": "Shulman",
+    "dateCreated": "2018-06-21T17:21:22.526Z",
+    "phone": "(444) 444-4444",
+    "email": "jfjf@fjf.com",
+    "birthDate": "2222-02-22",
+    "postalCode": "h2h 1g9",
+    "memberType": "ado",
+    "hadAlreadyVisitedALab": "ouiAilleur",
+    "referral": "pec",
+    "profileVisble": "true",
+    "skills": [
+        "Dessiner à main"
+    ],
+    "visits": ["2018-06-21T17:21:22.526Z", "2018-06-21T17:22:22.526Z"],
+    "projects": [
+    {
+        "projectName": "Acrylic Necklaces",
+        "datesActive": ["2018-06-21T17:21:22.526Z", "2018-06-22T17:21:22.526Z"],
+        "skills": ["Dessiner à main", "laser cut"],
+        "public": "false"
+    }]
+}

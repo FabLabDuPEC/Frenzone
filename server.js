@@ -7,8 +7,10 @@ var path = require('path'); // node module for working with directory and file p
 const fs = require('fs'); // node module for working with the filesystem
 var bodyParser = require('body-parser'); // node module middleware for parsing incoming requests before handing off to other server-side functions 
 const { body, validationResult } = require('express-validator/check');
+var io = require('socket.io')(http);
 
 app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.text()); // support text encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(express.static("frontend")); // serve index.html, style.css, index.js, and other files from the path passed as a string
@@ -48,20 +50,20 @@ function createUser(newUser, res) {
             };
             if (database.members.some(IDinDB)) { // return true as soon as any matching element is found
                 throw Error("Discrepancy between database's user count and number of members. Looks like the next userID # has already been assigned.");
-                res.send("Database error: discrepancy between database user count and number of members in the database. Check db.json.");
+                res.send({ message: "Database error: discrepancy between database user count and number of members in the database. Check db.json." });
             }
             var phoneInDB = function(element) { // function run on every element
                 return element.phone == newUser.phone;
             };
             if (database.members.some(phoneInDB)) {
                 console.log("New user's phone number " + newUser.phone + " already in database.");
-                res.send(newUser.phone + " already in the database.");
+                res.send({ message: newUser.phone + " already in the database." });
             } else {
                 write(database, userCount);
             }
         } else {
             console.log("Database is empty. Restore db.json from backup and restart the server.")
-            res.send("Database is empty. Restore db.json from backup and restart the server.")
+            res.send({ message: "Database is empty. Restore db.json from backup and restart the server." })
         }
     };
 
@@ -92,11 +94,114 @@ function createUser(newUser, res) {
 
 app.post('/saveUser', [receive, respond]); // array of functions that sequentially handle the request 
 
-app.get('/success', (req, res) => {
-    res.send(__dirname + "/frontend/success.html");
+app.get('/success', (req, res) =>
+    res.send("success placeholder route"))
+
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + "/frontend/login/login.html");
+});
+
+app.post('/login/lookupUser', (req, res) => {
+    var phoneNum = JSON.parse(req.body);
+    console.log("received: " + req.body)
+    fs.readFile("db.json", (err, data) => {
+        if (err) throw err;
+        var database = JSON.parse(data);
+        if (database.hasOwnProperty("members")) { // check that database is initialized
+            var result = database.members.find(element => {
+                return element.phone == phoneNum;
+            });
+            console.log("lookup by phone returned:");
+            console.log(result);
+            if (result == undefined) {
+                res.send("not found")
+            } else { res.send(result.firstName) }
+        } else { // if database is not initialized
+            console.log("Database is empty. Restore db.json from backup and restart the server.")
+            res.send("Database is empty. Restore db.json from backup and restart the server.")
+        }
+    })
+    // res.send(JSON.parse(phoneNum));
+});
+
+app.get('/signup', (req, res) => {
+    res.sendFile(__dirname + "/frontend/signup/signup.html");
 });
 
 
+// Socket.io
+io.on('connection', function(socket) {
+    console.log('a user connected');
+    socket.on('phone lookup', function(phoneNumberOnly) {
+        console.log("socket received " + phoneNumberOnly);
+        fs.readFile("db.json", (err, data) => {
+            if (err) throw err;
+            var database = JSON.parse(data);
+            if (database.hasOwnProperty("members")) { // check that database is initialized
+                var result = database.members.find(element => {
+                    return element.phone == phoneNumberOnly;
+                });
+                console.log("lookup by phone returned:");
+                console.log(result);
+                if (result == undefined) {
+                    io.emit("user not found", "not found");
+                } else { io.emit("user found", result) }
+            } else { // if database is not initialized
+                console.log("Database is empty. Restore db.json from backup and restart the server.")
+            }
+        })
+    })
+    // add to visits.json
+    socket.on('accompanying count', function(count, userID) {
+        count = parseInt(count, 10);
+        console.log("accompanied by " + count);
+        var now = new Date();
+        var shortDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+        console.log("short date is " + shortDate);
+        // TKTKTKTKTKTKTK
+        fs.readFile("visits.json", (err, data) => { // find today in visits.json
+            if (err) throw err;
+            var db = JSON.parse(data);
+            if (db.hasOwnProperty("visits")) { // check that database is initialized
+                var today = db.visits.find(element => {
+                    return element.date == shortDate;
+                });
+                if (today == undefined) { // if no such date exists yet in visits.json, create it and add the new visitor + party
+                    var newVisit = {
+                        "date": shortDate,
+                        "numVisitors": (count + 1),
+                        "visitorList": [{
+                            "user": userID,
+                            "time": now,
+                            "accompanied": count
+                        }]
+                    }
+                    db.visits.push(newVisit); // push new date and visit to the visits key
+                    fs.writeFile("visits.json", JSON.stringify(db), err => {
+                        if (err) throw err;
+                    });
+                } else { // if the date already exists in visits.json
+                    var newVisit = { // create new visit entry
+                        "user": userID,
+                        "time": now,
+                        "accompanied": count
+                    }
+                    today.numVisitors = today.numVisitors + (count + 1); // add visitors to day
+                    today.visitorList.push(newVisit); // add visitor details to day
+                    fs.writeFile("visits.json", JSON.stringify(db), err => { // write updated entries to visits.json
+                        if (err) throw err;
+                    });
+                }
+            } else {
+                console.log("Database is empty. Restore visits.json from backup and restart the server.")
+            }
+        });
+    });
+    // Disconnect
+    socket.on('disconnect', function() {
+        console.log('user disconnected');
+    });
+});
 
 
 
