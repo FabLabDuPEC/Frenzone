@@ -88,7 +88,7 @@ function createUser(newUser, res) {
                 if (err) throw err;
             });
         });
-        res.status(200).send({ message: "Success, wrote user to database.", redirect: "/success" }); // Send successful response and redirect to client
+        res.status(200).send({ message: "Success, wrote user to database.", redirect: "/login" }); // Send successful response and redirect to client
     };
 }
 
@@ -152,13 +152,36 @@ io.on('connection', function(socket) {
         })
     })
     // add to visits.json
-    socket.on('accompanying count', function(count, userID) {
+    socket.on('save visit', function(count, userID, researchProduction, personalProfessional) {
         count = parseInt(count, 10);
         console.log("accompanied by " + count);
         var now = new Date();
-        var shortDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+        var shortDate = now.toJSON().substring(0, 10);
+        // var shortDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
         console.log("short date is " + shortDate);
-        // TKTKTKTKTKTKTK
+        // TKTKTKTKTKTKTK 
+        // Update user database
+        fs.readFile("db.json", (err, data) => {
+            if (err) throw err;
+            var db = JSON.parse(data);
+            if (db.hasOwnProperty("members")) {
+                var user = db.members.find(element => {
+                    return element.userID == userID;
+                })
+                if (user == undefined) { // if the user isn't found (shouldn't happen as the user has already been identified by this point)
+                    console.log("Wasn't able to update the user's Visits property.")
+                } else { // if the user is found 
+                    user.visits.push(shortDate); // add current short date to the user's visits 
+                    fs.writeFile("db.json", JSON.stringify(db), err => { // overwrite database db
+                        if (err) throw err;
+                    })
+                }
+            } else {
+                console.log("User database is empty. Restore db.json from backup and restart the server.")
+            }
+        })
+        // TKTKTKTKTKTKT
+        //Update visits database
         fs.readFile("visits.json", (err, data) => { // find today in visits.json
             if (err) throw err;
             var db = JSON.parse(data);
@@ -173,7 +196,9 @@ io.on('connection', function(socket) {
                         "visitorList": [{
                             "user": userID,
                             "time": now,
-                            "accompanied": count
+                            "accompanied": count,
+                            "researchProduction": researchProduction,
+                            "personalProfessional": personalProfessional
                         }]
                     }
                     db.visits.push(newVisit); // push new date and visit to the visits key
@@ -184,7 +209,9 @@ io.on('connection', function(socket) {
                     var newVisit = { // create new visit entry
                         "user": userID,
                         "time": now,
-                        "accompanied": count
+                        "accompanied": count,
+                        "researchProduction": researchProduction,
+                        "personalProfessional": personalProfessional
                     }
                     today.numVisitors = today.numVisitors + (count + 1); // add visitors to day
                     today.visitorList.push(newVisit); // add visitor details to day
@@ -193,108 +220,13 @@ io.on('connection', function(socket) {
                     });
                 }
             } else {
-                console.log("Database is empty. Restore visits.json from backup and restart the server.")
+                console.log("Visits database is empty. Restore visits.json from backup and restart the server.")
             }
         });
     });
+
     // Disconnect
     socket.on('disconnect', function() {
         console.log('user disconnected');
     });
-});
-
-
-
-
-
-// Write file
-// fs.open('testTextFile.txt', 'w', function (err, file) {
-//   if (err) throw err;
-//   console.log('Saved!');
-// }); 
-
-// take request property
-// parameter middleware that will run before the next routes
-app.param('name', function(req, res, next, name) {
-
-    // check if the user with that name exists
-    // do some validations
-    // add -dude to the name
-    var modified = name + '-dude';
-
-    // save name to the request
-    req.name = modified;
-
-    next();
-});
-
-// http://localhost:8080/api/users/chris
-app.get('/api/users/:name', function(req, res) {
-    // the user was found and is available in req.user
-    res.send('What is up ' + req.name + '!');
-});
-
-
-/*
-var validate = function(req, res, next) { // validate sign-up data conforms to standards
-
-// Express Validator i never figured it out. Here lies he first jumbled attempt cribbed in part from the express-validator get starting and the mozilla explainer
-        [body('firstName').isLength({ min: 1 }).withMessage('First Name empty'),
-            body('email').isEmail()
-        ]
-
-        // var newUser = res.locals.newUser;
-
-        , (req, res, next) => {
-            // Extract the validation errors from a request.
-            const errors = validationResult(req);
-
-            if (!errors.isEmpty()) {
-                // There are errors. Render form again with sanitized values/errors messages.
-                // Error messages can be returned in an array using `errors.array()`.
-                return res.status(422).json({ errors: errors.array() });
-            } else {
-                // Data from form is valid.
-            }
-        };
-  next()
-};
-
-var verify = function(req, res, next) {
-    // Load database from disk
-    var db = null; // Once read and parsed, this will be the database object
-    fs.readFile('database.json', function(err, data) { // Asynchronous read database JSON file server disk
-        if (err) {
-            return console.error(err);
-        }
-        db = JSON.parse(data); // parse JSON into javascript object
-    });
-
-    // check if user is already in the database
-
-    // if user is already in database respond negative
-    // else add to database
-    // console.log(db);
-    res.locals.status = "written";
-    // res.locals.db = db;
-    // write anon data to database
-    var anonData = res.locals.anonData;
-    next();
-}
-
-*/
-
-// // route with GET
-// app.get('/api/users', function(req, res) {
-//   var user_id = req.param('id');
-//   var token = req.param('token');
-//   var geo = req.param('geo');
-
-//   res.send(user_id + ' ' + token + ' ' + geo);
-// });
-
-
-// How to send a file when a request hits a given path. This is insufficient for serving the main page because it only serves the one file, without the accompanying index.js and style.css
-app.get('/xyz', function(req, res) {
-    res.send({ "user": "raph", "height": "6" });
 });
