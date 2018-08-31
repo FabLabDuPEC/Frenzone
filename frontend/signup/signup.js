@@ -76,11 +76,7 @@ function saveUser() {
         }
     });
     var today = new Date();
-    var month = null;
-    if (today.getMonth() < 10) {
-        month = 0 + today.getMonth();
-    } else { month = today.getMonth() }
-    var dateCreated = today.getFullYear() + "-" + month + "-" + today.getDate();
+    var dateCreated = today.toJSON().substring(0,10);
     var phone = form.phone.value;
     var phoneNumberOnly = phone.replace(/\D/g, ''); // reduce phone to only numbers
     var newUser = { // create new user object

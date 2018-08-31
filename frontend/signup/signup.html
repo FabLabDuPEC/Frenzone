@@ -3,7 +3,7 @@
 
 <head>
     <title>Fab Lab Frenzone v4 - Sign Up</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/libraries/jquery-3.3.1.min.js"></script>
     <script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
     <script type="text/javascript" src="signup.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css"></link>
@@ -55,11 +55,11 @@
                         <select name="dejaFabLab" id="dejaFabLab">
                             <option value="ouiMontreal">Oui, à Montréal</option>
                             <option value="ouiAilleur">Oui, hors de Montréal</option>
-                            <option value="non">Non</option>
+                            <option selected="selected" value="non">Non</option>
                         </select>
                     </div>
                     <div class="question">
-                        <label for="commentEntendu">Comment avez vous connu le Fab Lab du PEC?</label>
+                        <label for="commentEntendu">Comment avez-vous connu le Fab Lab du PEC?</label>
                         <select name="commentEntendu" id="commentEntendu">
                             <option value="pec">Le PEC</option>
                             <option value="ecole">À l'école</option>
@@ -70,12 +70,11 @@
                             <option value="article">Un article</option>
                         </select>
                     </div>
-                    <div class="question">
+                    <!-- <div class="question"> 
                         <label for="profileVisible">Aimeriez vous que votre profil soit visibles aux autres membres du Fab Lab?<span class="tooltip">&#9432;
                                 <span class="tooltiptext tooltip-right">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</span>
                             </span>
                         </label>
-                        <!--                         <div class="smallerText">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</div> -->
                         <div class="question" required>
                             <input type="radio" name="profileVisible" value="true" required>
                             <label for="profileVisible">Oui, j'aimerais que d'autres membres puisse voir mes projets publics</label>
@@ -85,6 +84,7 @@
                             <label for="profileVisible">Non, j'aimerais que mon profil reste entièrement privé</label>
                         </div>
                     </div>
+                -->
                     <h3>Mes Compétences</h3>
                     <div class="question">
                         <label for="competencies">Je suis autosuffisant a...</label>
@@ -93,35 +93,35 @@
                     </div>
                     <div class="question">
                         <h3>Statistiques anonymes pour le Pavillon d'Éducation Communautaire</h3>
-                        <p class="smallerText extraSpaceTop">La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de tout donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ta salaire ou genre !</p>
+                        <p class="smallerText extraSpaceTop">La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de toutes donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ton salaire ni ton genre !</p>
                     </div>
                     <div class="question">
                         <label for="expectations">Quels sont vos attentes façe à l'organisme?</label>
                         <textarea class="input pec" name="expectations" id="expectations" placeholder="Au PEC j'attends à..." autocomplete="false" rows=3 cols=60></textarea>
                     </div>
                     <div class="question">
-                        <label for="gender">Genre</label>
+                        <label for="gender">Quel est votre genre?</label>
                         <select name="gender" id="gender">
-                            <option value="autre">autre</option>
-                            <option value="femme">femme</option>
-                            <option value="homme">homme</option>
+                            <option value="femme">Femme</option>
+                            <option value="homme">Homme</option>
+                            <option selected="selected" value="autre">Autre</option>
                         </select>
                     </div>
                     <div class="question">
                         <label for="maritalStatus">Quel est votre status sociale?</label>
                         <select name="maritalStatus" id="maritalStatus">
-                            <option value="marié">marié</option>
-                            <option value="celibataire">celibataire</option>
-                            <option value="veuf/ve">veuf/ve</option>
-                            <option value="divorcé">divorcé</option>
-                            <option value="union libre">union libre</option>
+                            <option value="marié">Marié.e</option>
+                            <option value="celibataire">Celibataire</option>
+                            <option value="veuf/ve">Veu.f.ve</option>
+                            <option value="divorcé">Divorcé.e</option>
+                            <option value="union libre">Union libre</option>
                         </select>
                     </div>
                     <div class="question">
                         <label for="chefDeFam">Êtes-vous presentement chef de famille monoparentale</label>
                         <select name="chefDeFam" id="chefDeFam">
-                            <option value="oui">oui</option>
-                            <option value="non">non</option>
+                            <option value="oui">Oui</option>
+                            <option selected="selected" value="non">Non</option>
                         </select>
                     </div>
                     <div class="question">
@@ -131,18 +131,18 @@
                     <div class="question">
                         <label for="schoolLevel">Niveau de scolarité</label>
                         <select name="schoolLevel" id="schoolLevel">
-                            <option value="primaire">primaire</option>
-                            <option value="secondaire">secondaire</option>
-                            <option value="collégiale">collégiale</option>
-                            <option value="universitaire">universitaire</option>
+                            <option value="primaire">Primaire</option>
+                            <option value="secondaire">Secondaire</option>
+                            <option value="collégiale">Collégiale</option>
+                            <option value="universitaire">Universitaire</option>
                         </select>
                     </div>
                     <div class="question">
-                        <label for="workStatus">Que faites vous resentement?</label>
+                        <label for="workStatus">Que faites vous presentement?</label>
                         <select name="workStatus" id="workStatus">
                             <option value="accident">Accidenté de travail</option>
                             <option value="chomeur">Chomeur</option>
-                            <option value="travailleur">Travailleur</option>
+                            <option selected="selected" value="travailleur">Travailleur</option>
                             <option value="etudiant">Étudiant</option>
                             <option value="menageur">Ménageur</option>
                             <option value="retraite">Retraité</option>
@@ -152,18 +152,18 @@
                     <div class="question">
                         <label for="annualRevenue">Quel est votre revenue annuel</label>
                         <select name="annualRevenue" id="annualRevenue">
-                            <option value="-4000">&lt;$4 000</option>
-                            <option value="4000-9000">$4 000- $9 000</option>
-                            <option value="9000-19000">$9 000-10 000</option>
-                            <option value="19000-25000">$19 000 - $25 000</option>
-                            <option value="25000+">$25 000+</option>
+                            <option value="-4000">&lt;4 000$</option>
+                            <option value="4000-9000">4 000$ - 9 999$</option>
+                            <option value="9000-19000">10 000$ - 19 999$</option>
+                            <option value="11000-25000">20 000$ - 24 999$</option>
+                            <option value="25000+">25 000+ $</option>
                         </select>
                     </div>
                     <div class="question">
                         <label for="residence">Dans votre residence, êtes vous?</label>
                         <select name="residence" id="residence">
-                            <option value=" proprietaire">propriétaire</option>
-                            <option value="locataire">locataire</option>
+                            <option value=" proprietaire">Propriétaire</option>
+                            <option value="locataire">Locataire</option>
                             <option value="HLM">HLM</option>
                             <option value="membre">Membre</option>
                             <option value="coop">Coop</option>
