@@ -1,11 +1,14 @@
 "use strict";
 // Socket.io
 var socket;
+var accompanyingCount = null;
+var userID = null;
 $(document).ready(function() {
     socket = io();
     // TEMPORARY
     $("#accompanyQuestion").toggle();
     $("#question1").toggle();
+    $("#svg").toggle();
     constrainTelInput();
     // TEMPORARY TKTKTK 
     var count = document.getElementById('count');
@@ -16,21 +19,40 @@ $(document).ready(function() {
         alert("Numéro de téléphone pas trouvé.");
     });
     socket.on('user found', function(user) {
+        userID = user.userID;
         console.log(user.firstName + " " + user.lastName + " found");
         $("#phoneLookup").toggle();
         $("#userLookup").prepend("<div id=\"welcome\">Bienvenue " + user.firstName + " </div>");
         // $("#accompanyQuestion").toggle(); // toggle accompanyQuestion div
         // create accompanyQuestion div
-        $("#phoneLookup").after("<div id=\"accompanyQuestion\" class=\"question\"><form id=\"accompanyingForm\" onSubmit=\"return false;\"><label for=\"accompanyCount\">Es-tu accompagné d\'autres personnes aujourd\'hui ?</label><br><input type=\"number\" id=\"accompanyCount\" name=\"accompanyCount\" value=\"0\" min=\"0\" max=\"99\"><br><input id=\"submit\" type=\"submit\" value=\"suivant\"></form></div>");
+        $("#phoneLookup").after("<div id=\"accompanyQuestion\" class=\"question\"><form id=\"accompanyingForm\" onSubmit=\"return false;\"><label for=\"accompanyCount\">Es-tu accompagné d\'autres personnes aujourd\'hui ?</label><br><input type=\"number\" id=\"accompanyCount\" name=\"accompanyCount\" value=\"0\" min=\"0\" max=\"99\" required autofocus><br><input id=\"submit\" type=\"submit\" value=\"suivant\"></form></div>");
+        $("#accompanyCount").focus();
         // Accompany count form submission behavior
+        // var accompanyCount = $("#accompanyCount").val();
         $("#accompanyingForm").submit(function() {
-            socket.emit('accompanying count', $("#accompanyCount").val(), user.userID); // send accompany count to server
-            $("#accompanyQuestion").after("<div class=\"question\" id=\"question1\"><label for=\"textInput\">question question question question</label><textarea id=\"textInput\" maxlength=\"200\"></textarea><div id=\"count\">200</div><input id=\"questionSubmit\" type=\"button\" value=\"sauter la question\"></div>");
+            accompanyingCount = $("#accompanyCount").val();
+            $("#welcome").after("<div id=\"sliderLabel\">Comment décririez vous votre visite au lab aujourd'hui ?");
+            $("#svg").toggle();
             $("#accompanyQuestion").toggle();
-            setupTextInput();
         });
     });
+    // socket.on('slider svg', function(svg) { // when receiving slider svg from server
+    // move this to after slider step
+    // $("#accompanyQuestion").after("<div class=\"question\" id=\"question1\"><label for=\"textInput\">question question question question</label><textarea id=\"textInput\" maxlength=\"200\"></textarea><div id=\"count\">200</div><input id=\"questionSubmit\" type=\"button\" value=\"sauter la question\"></div>");
+    // move this to after slider step
+    // setupTextInput();
+
+    // });
 });
+
+function selectVisitPurpose(researchProduction, personalProfessional) {
+    socket.emit('save visit', accompanyingCount, userID, researchProduction, personalProfessional); // send accompany count to server
+    $("#svg").after('<div id=\"thankyou\"><div id="whiteBox"><div>Merci pour avoir visité le lab :)</div><br><button id="reset" onclick="reset()">Réinitialiser</button></div></div>');
+    // $("#svg").after('<div id="resetContainer"><button id="reset"></button></div>')
+    $("#sliderLabel").toggle();
+    $("#svg").toggle(); // toggle off and thanks
+}
+
 
 function setupTextInput() {
     var textInput = document.getElementById('textInput');
@@ -45,6 +67,10 @@ function setupTextInput() {
             questionSubmit.value = "soumettre";
         } else { questionSubmit.value = "sauter la question" }
     };
+}
+
+function reset() {
+    window.location.href = "/";
 }
 
 function constrainTelInput() {

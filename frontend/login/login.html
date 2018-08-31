@@ -4,11 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <title>Fab Lab Frenzone v4: Login</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
-    <script type="text/javascript" src="/login/login.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="/login/style.css"></link>
+    <link rel="stylesheet" type="text/css" href="/login/svg/style.css"></link>
+    <script type="text/javascript" src="/libraries/jquery-3.3.1.min.js"></script>
+    <script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/libraries/paper/dist/paper-full.min.js"></script>
+    <script type="text/paperscript" canvas="svg" src="/login/svg/script.js"></script>
+    <script type="text/javascript" src="/login/login.js"></script>
 </head>
 
 <body>
@@ -17,14 +20,15 @@
             <div id="leftSidebar"></div>
             <!-- PHONE LOGIN TEMPLATE -->
             <div id="userLookup">
-                <form id="phoneLookup" onSubmit="return false;">
+                <form id="phoneLookup" autocomplete="false" onSubmit="return false;">
                     <label for="phone">Connectez avec votre numéro de téléphone</label>
                     <br>
-                    <input class="input" name="phone" id="phone" type="tel" placeholder="(___) ___-____" autocomplete="false" required>
+                    <input class="input" name="phone" id="phone" type="tel" placeholder="(___) ___-____" autocomplete="false" required autofocus="">
                     <input id="loginButton" type="submit" value="Connexion">
                 </form>
+                <canvas id="svg" width=800 height=700></canvas>
                 <!-- People accompanying  -->
-<!--                 <div id="accompanyQuestion" class="question">
+                <!--                 <div id="accompanyQuestion" class="question">
                     <form id="accompanyingForm" onSubmit="return false;">
                         <label for="accompanyCount">Es-tu accompagné d'autres personnes aujourd'hui ?</label>
                         <br>
@@ -33,7 +37,7 @@
                     </form>
                 </div> -->
                 <!-- QUESTION TEMPLATE -->
-<!--                 <div class="question" id="question1">
+                <!--                 <div class="question" id="question1">
                     <label for="textInput">question question question question</label>
                     <textarea id="textInput" maxlength="200"></textarea>
                     <div id="count">200</div>
