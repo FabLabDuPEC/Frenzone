@@ -128,6 +128,10 @@ app.get('/signup', (req, res) => {
     res.sendFile(__dirname + "/frontend/signup/signup.html");
 });
 
+app.get('/admin', (req, res) => {
+    res.sendFile(__dirname + "/frontend/admin/admin.html");
+})
+
 
 // Socket.io
 io.on('connection', function(socket) {
@@ -224,6 +228,231 @@ io.on('connection', function(socket) {
             }
         });
     });
+
+    //Generate Visits CSV
+    socket.on("generate visits csv", function() {
+        // 1. Fetch data from disk
+        var usersDB = null;
+        var users = null;
+        var visitsDB = null;
+        var visits = null;
+        var rowCount = 0;
+        var visitsArray = [];
+        // read db.json
+        fs.readFile('db.json', processUsersDB); // read database, callback gets passed err and data
+        function processUsersDB(err, data) {
+            if (err) throw err; // handles readFile error
+            usersDB = JSON.parse(data);
+            users = usersDB.members;
+        }
+        // read visits.json
+        fs.readFile('visits.json', processVisitsDB);
+
+        function processVisitsDB(err, data) {
+            if (err) throw err;
+            visitsDB = JSON.parse(data);
+            visits = visitsDB.visits;
+            createVisitsTable();
+        }
+
+        // 2. Combine information from two databases into a single table
+        function createVisitsTable() {
+            // Create a first element in the array, which contains the column names as values
+            var header = {
+                date: "Date",
+                userID: "User ID",
+                firstName: "Prenom",
+                lastName: "Nom de famille",
+                visitorCount: "Nombre de personnes",
+                researchProduction: "Recherche/Production",
+                personalProfessional: "Personnel/Professionnel",
+                dayOfWeek: "Jour de la semaine",
+                timeOfDay: "L'heure de visite",
+                memberType: "Type de membre"
+            };
+            visitsArray.push(header);
+            for (var i = 0; i < visits.length; i++) {
+                for (var j = 0; j < visits[i].visitorList.length; j++) {
+                    // Prepare day of week
+                    var rawDate = visits[i].date.split('-');
+                    var visitDate = new Date(rawDate[0], rawDate[1], rawDate[2]);
+                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                    var dayOfWeek = weekdays[visitDate.getDay()];
+                    // Prepare time of day
+                    var rawTime = new Date(visits[i].visitorList[j].time);
+                    var timeOfDay = rawTime.getHours() + ":" + rawTime.getMinutes();
+                    //prepare data from users database
+                    var user = users[(visits[i].visitorList[j].user - 1)];
+                    // Create row object representing one sign-in to Frenzone
+                    var row = {
+                        date: visits[i].date,
+                        userID: visits[i].visitorList[j].user,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        visitorCount: (visits[i].visitorList[j].accompanied + 1),
+                        researchProduction: visits[i].visitorList[j].researchProduction,
+                        personalProfessional: visits[i].visitorList[j].personalProfessional,
+                        dayOfWeek: dayOfWeek,
+                        timeOfDay: timeOfDay,
+                        memberType: user.memberType
+                    }
+                    visitsArray.push(row);
+                }
+            }
+
+            // 3. Convert table to CSV
+            var now = new Date();
+            var shortDate = now.toJSON().substring(0, 10);
+            convertJSONtoCSV(visitsArray, shortDate);
+        }
+
+
+        function convertJSONtoCSV(JSONData, ReportTitle) {
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';
+
+            //1st loop is to extract each row
+            for (var i = 0; i < arrData.length; i++) {
+                var row = "";
+
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData[i]) {
+                    row += '"' + arrData[i][index] + '",';
+                }
+
+                row.slice(0, row.length - 1);
+
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {
+                alert("Invalid data");
+                return;
+            }
+
+            //Generate a file name
+            var fileName = "FabLab Rapport De Visites ";
+            //this will remove the blank-spaces from the title and replace it with an underscore
+            fileName += ReportTitle.replace(/ /g, "_");
+            fileName += ".csv";
+
+            //write file to server root directory
+            // fs.writeFile(fileName, CSV, err => {
+            //     if (err) throw err;
+            // });
+
+            //send CSV to client
+            io.emit("visits csv data", CSV, fileName);
+        }
+    });
+
+    // Generate Anon CSV
+    socket.on("generate anon csv", function() {
+        var path = require('path'); // node module for working with directory and file paths
+        const fs = require('fs'); // node module for working with the filesystem
+
+        // 1. Fetch data from disk
+        var anonDB = null;
+        var anon = null;
+        var rowCount = 0;
+        var anonArray = [];
+
+        // read anon.json
+        fs.readFile('anonPecDb.json', processAnonDB); // read database, callback gets passed err and data
+        function processAnonDB(err, data) {
+            if (err) throw err; // handles readFile error
+            anonDB = JSON.parse(data);
+            anon = anonDB.anonData;
+            createVisitsTable();
+        }
+
+        // 2. Combine information from two databases into a single table
+        function createVisitsTable() {
+            // Create a first element in the array, which contains the column names as values
+            var header = {
+                dateCreated: "Date d'abonnement",
+                gender: "Genre",
+                maritalStatus: "Status marital",
+                headOfHousehold: "Chef de famille",
+                origin: "Origine",
+                schoolLevel: "Niveau de scolarite",
+                workStatus: "Status de travail",
+                annualRevenue: "Revenue annuel",
+                residence: "Type de Residence",
+                activityAtPEC: "Fab Lab"
+            };
+            anonArray.push(header);
+            for (var i = 0; i < anon.length; i++) {
+                // Prepare day of week
+                var rawDate = anon[i].dateCreated.split('-');
+                var creationDate = new Date(rawDate[0], rawDate[1], rawDate[2]);
+                var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                var dayOfWeek = weekdays[creationDate.getDay()];
+                // Create row object representing one sign-in to Frenzone
+                var row = {
+                    dateCreated: anon[i].dateCreated,
+                    gender: anon[i].gender,
+                    maritalStatus: anon[i].maritalStatus,
+                    headOfHousehold: anon[i].headOfHousehold,
+                    origin: anon[i].origin,
+                    schoolLevel: anon[i].schoolLevel,
+                    workStatus: anon[i].workStatus,
+                    annualRevenue: anon[i].annualRevenue,
+                    residence: anon[i].residence,
+                    activityAtPEC: anon[i].activityAtPEC
+                }
+                anonArray.push(row);
+            }
+
+            // 3. Convert table to CSV
+            var now = new Date();
+            var shortDate = now.toJSON().substring(0, 10);
+            convertJSONtoCSV(anonArray, shortDate);
+        }
+
+
+        function convertJSONtoCSV(JSONData, ReportTitle) {
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';
+
+            //1st loop is to extract each row
+            for (var i = 0; i < arrData.length; i++) {
+                var row = "";
+
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData[i]) {
+                    row += '"' + arrData[i][index] + '",';
+                }
+
+                row.slice(0, row.length - 1);
+
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {
+                alert("Invalid data");
+                return;
+            }
+
+            //Generate a file name
+            var fileName = "FabLab Donnees Anonymes ";
+            //this will remove the blank-spaces from the title and replace it with an underscore
+            fileName += ReportTitle.replace(/ /g, "_");
+            fileName += ".csv";
+
+            //write file to server root directory
+            // fs.writeFile(fileName, CSV, err => {
+            //     if (err) throw err;
+            // });
+
+            // send CSV to client
+            io.emit("visits csv data", CSV, fileName);
+        }
+    })
 
     // Disconnect
     socket.on('disconnect', function() {
