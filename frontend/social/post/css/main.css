@@ -1,0 +1,131 @@
+html,
+body {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+textarea {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+#flexContainer {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#overlay {
+    position: fixed;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    background-color: white;
+}
+
+#overlay>* {
+    align-self: center;
+    z-index: 1;
+}
+
+#captionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+#captionContainer textarea {
+    margin: 0px 20px;
+}
+
+#titleField {
+    font-size: 34px;
+    resize: none;
+    overflow: hidden;
+}
+
+#skillsField {
+    font-size: 25px;
+    resize: none;
+    overflow: hidden;
+}
+
+#postButton {
+    margin: 0;
+}
+
+#cameraContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#cameraControls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#previewContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#video {
+    object-fit: cover;
+}
+
+#preview {
+    object-fit: cover;
+}
+
+#canvas {
+    display: none;
+}
+
+.slider-wrapper {
+    display: inline-block;
+    width: 20px;
+    height: 400px;
+    padding: 0;
+}
+
+.slider-wrapper input {
+    width: 400px;
+    height: 20px;
+    margin: 0;
+    transform-origin: 200px 200px;
+    transform: rotate(-90deg);
+}
+
+.cameraUiButton {
+    background-color: #555555;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    height: 40px;
+}
+
+.cameraUiButton:hover {
+    background-color: #444444
+}
+
+#hueLabel {
+    font-size: 16px;
+    padding: 10px 5px 10px 5px;
+}

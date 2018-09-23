@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Capture 4: save to file</title>
+    <link rel="stylesheet" href="/social/post/css/main.css" />
+    <script src="/social/post/js/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/social/post/js/main.js"></script>
+    <script src="/social/post/gifshot-master/src/gifshot.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+</head>
+
+<body>
+    <!--     <div id="overlay">
+        <h1>Click camera feed or press spacebar to take picture.</h1>
+        <h1>Ok.</h1>
+    </div> -->
+    <div id="flexContainer">
+        <div id="cameraContainer">
+            <video id="video" autoplay playsinline></video>
+            <button id="capture" class="cameraUiButton">Snap photo</button>
+        </div>
+        <div id="cameraControls">
+            <div id="hueLabel">🌀</div>
+            <div class="slider-wrapper">
+                <input type="range" name="hue" id="hue" min="0" max="500" value="0" step="1">
+            </div>
+            <button id="reset" class="cameraUiButton">Reset</button>
+        </div>
+        <canvas id="canvas"></canvas>
+        <div id="previewContainer">
+            <img id="preview">
+            <button id="captionButton" class="cameraUiButton">Add caption</button>
+        </div>
+        <div id="captionContainer">
+            <textarea id="titleField" placeholder="Title..." rows="2" cols="18" maxlength="50"></textarea>
+            <textarea name="skills" id="skillsField" placeholder="#DecoupeLaser #Imprimante3D..." rows="6" cols="30"></textarea>
+            <button name="postButton" id="postButton" class="cameraUiButton">Post</button>
+        </div>
+        <!-- Canvas is visibility: hidden, used to generate images and fills in the background -->
+    </div>
+</body>
+
+</html>
