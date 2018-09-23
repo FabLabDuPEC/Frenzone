@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(express.static("frontend")); // serve index.html, style.css, index.js, and other files from the path passed as a string
 
-http.listen(8080, function() { // serve content to localhost:8080
+http.listen(8080, "127.0.0.1", function() { // serve content to localhost:8080
     console.log('listening on *:8080');
 });
 
@@ -92,6 +92,12 @@ function createUser(newUser, res) {
     };
 }
 
+function newShortDate() {
+    var now = new Date();
+    return now.toJSON().substring(0, 10);
+}
+
+// EXPRESS
 app.post('/saveUser', [receive, respond]); // array of functions that sequentially handle the request 
 
 app.get('/success', (req, res) =>
@@ -101,6 +107,42 @@ app.get('/login', (req, res) => {
     res.sendFile(__dirname + "/frontend/login/login.html");
 });
 
+app.get('/signup', (req, res) => {
+    res.sendFile(__dirname + "/frontend/signup/signup.html");
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(__dirname + "/frontend/admin/admin.html");
+})
+
+app.get('/laser', (req, res) => {
+    res.sendFile(__dirname + "/frontend/laser/v2/index.html");
+});
+
+// SOCIAL 
+app.get('/capture1', (req, res) => {
+    res.sendFile(__dirname + "/frontend/social/sandbox/1-capture-to-canvas/index.html");
+});
+
+app.get('/capture2', (req, res) => {
+    res.sendFile(__dirname + "/frontend/social/sandbox/2-photo-grid/index.html");
+});
+
+app.get('/capture3', (req, res) => {
+    res.sendFile(__dirname + "/frontend/social/sandbox/3-capture-to-file/index.html");
+});
+
+app.get('/capture4', (req, res) => {
+    res.sendFile(__dirname + "/frontend/social/sandbox/4-gifshot/index.html");
+});
+
+app.get('/social/post', (req, res) => {
+    res.sendFile(__dirname + "/frontend/social/")
+});
+
+
+// Old Express approach to handling user lookup, deprecated in favor of socket.io
+/*
 app.post('/login/lookupUser', (req, res) => {
     var phoneNum = JSON.parse(req.body);
     console.log("received: " + req.body)
@@ -122,20 +164,12 @@ app.post('/login/lookupUser', (req, res) => {
         }
     })
     // res.send(JSON.parse(phoneNum));
-});
-
-app.get('/signup', (req, res) => {
-    res.sendFile(__dirname + "/frontend/signup/signup.html");
-});
-
-app.get('/admin', (req, res) => {
-    res.sendFile(__dirname + "/frontend/admin/admin.html");
-})
-
+*/
 
 // Socket.io
 io.on('connection', function(socket) {
-    console.log('a user connected');
+    console.log('client connected');
+    //LOGIN
     socket.on('phone lookup', function(phoneNumberOnly) {
         console.log("socket received " + phoneNumberOnly);
         fs.readFile("db.json", (err, data) => {
@@ -149,7 +183,16 @@ io.on('connection', function(socket) {
                 console.log(result);
                 if (result == undefined) {
                     io.emit("user not found", "not found");
-                } else { io.emit("user found", result) }
+                } else {
+                    // check that person has not already logged in
+                    var lastLoginDate = result.visits[(result.visits.length - 1)];
+                    var today = newShortDate();
+                    if (lastLoginDate === today) {
+                        io.emit("user found", result, false) // This user has already logged in once today.
+                    } else {
+                        io.emit("user found", result, true); // This is the first log in today. Send user data to client.
+                    }
+                }
             } else { // if database is not initialized
                 console.log("Database is empty. Restore db.json from backup and restart the server.")
             }
@@ -160,7 +203,7 @@ io.on('connection', function(socket) {
         count = parseInt(count, 10);
         console.log("accompanied by " + count);
         var now = new Date();
-        var shortDate = now.toJSON().substring(0, 10);
+        var shortDate = newShortDate();
         // var shortDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
         console.log("short date is " + shortDate);
         // TKTKTKTKTKTKTK 
@@ -184,7 +227,6 @@ io.on('connection', function(socket) {
                 console.log("User database is empty. Restore db.json from backup and restart the server.")
             }
         })
-        // TKTKTKTKTKTKT
         //Update visits database
         fs.readFile("visits.json", (err, data) => { // find today in visits.json
             if (err) throw err;
@@ -229,6 +271,60 @@ io.on('connection', function(socket) {
         });
     });
 
+    // TKTKTKTK
+    // add unregistered visitors to visits.json
+    socket.on('save unregistered visit', function(count) {
+        var userId = -1;
+        count = parseInt(count, 10);
+        var now = new Date();
+        var shortDate = newShortDate();
+        // var shortDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+        console.log("short date is " + shortDate);
+        //Update visits database
+        fs.readFile("visits.json", (err, data) => { // find today in visits.json
+            if (err) throw err;
+            var db = JSON.parse(data);
+            if (db.hasOwnProperty("visits")) { // check that database is initialized
+                var today = db.visits.find(element => {
+                    return element.date == shortDate;
+                });
+                if (today == undefined) { // if no such date exists yet in visits.json, create it and add the new visitor + party
+                    var newVisit = {
+                        "date": shortDate,
+                        "numVisitors": count,
+                        "visitorList": [{
+                            "user": -1,
+                            "time": now,
+                            "accompanied": count,
+                            "researchProduction": 0,
+                            "personalProfessional": 0
+                        }]
+                    }
+                    db.visits.push(newVisit); // push new date and visit to the visits key
+                    fs.writeFile("visits.json", JSON.stringify(db), err => {
+                        if (err) throw err;
+                    });
+                } else { // if the date already exists in visits.json
+                    var newVisit = { // create new visit entry
+                        "user": -1,
+                        "time": now,
+                        "accompanied": count,
+                        "researchProduction": 0,
+                        "personalProfessional": 0
+                    }
+                    today.numVisitors = today.numVisitors + count; // add visitors to day
+                    today.visitorList.push(newVisit); // add visitor details to day
+                    fs.writeFile("visits.json", JSON.stringify(db), err => { // write updated entries to visits.json
+                        if (err) throw err;
+                    });
+                }
+            } else {
+                console.log("Visits database is empty. Restore visits.json from backup and restart the server.")
+            }
+        });
+    });
+
+    //ADMIN
     //Generate Visits CSV
     socket.on("generate visits csv", function() {
         // 1. Fetch data from disk
@@ -412,7 +508,6 @@ io.on('connection', function(socket) {
             convertJSONtoCSV(anonArray, shortDate);
         }
 
-
         function convertJSONtoCSV(JSONData, ReportTitle) {
             //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
             var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
@@ -452,7 +547,16 @@ io.on('connection', function(socket) {
             // send CSV to client
             io.emit("visits csv data", CSV, fileName);
         }
-    })
+    });
+
+    //Social
+    socket.on("post gif", function(postCandidate) {
+        //postCandidate contains URI, title, and skills
+        fs.readFile("social.json", (err, data) => {
+            if (err) throw err;
+            console.log(postCandidate);
+        });
+    });
 
     // Disconnect
     socket.on('disconnect', function() {
