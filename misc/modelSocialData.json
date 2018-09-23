@@ -1,0 +1,22 @@
+{
+    "posts": [
+    {
+        "PostId": 0,
+        "URI": "/postData/2018-09-22T21-09-26_463Z.png",
+        "fileType": "png",
+        "title": "Niaseries microscope",
+        "competences": ["decoupeuse laser", "microscope", "time lapse"],
+        "userId": 0,
+        "dateCreated": "2018-09-22T21:09:26.463Z"
+    }],
+    "postsByUser": [
+    {
+        "userId": 0,
+        "postsById": [0, 1, 4, 13]
+    },
+    {},
+    {
+        "userId": 2,
+        "postsById": [2, 3, 5, 6]
+    }]
+}
