@@ -3,7 +3,9 @@ body {
     width: 100%;
     height: 100%;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 20px;
 }
+
 
 input {
     background-color: #4CAF50;
@@ -17,12 +19,40 @@ input {
     font-size: 24px;
 }
 
-input:hover{
-	background-color: #57a55a;
+input[type=button]:hover {
+    background-color: #57a55a;
 }
 
-input:active{
-	background-color: #579359;
+input[type=button]:active {
+    background-color: #579359;
+}
+
+#container>div {
+    margin-bottom: 20px;
+}
+
+input[type=number]{
+    width: 55px;
+
+}
+
+#unregisteredVisitorsContainer{
+}
+
+#unregisteredVisitorsContainer > div {
+    margin-right: 10px;
+}
+
+#unregisteredVisitorsContainer > input{
+    background-color: red;
+}
+
+#unregisteredVisitorsButton:hover{
+    background-color: #e30000;
+}
+
+#unregisteredVisitorsButton:active{
+    background-color: #d10000;
 }
 
 #container {

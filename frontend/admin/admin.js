@@ -7,9 +7,17 @@ $(document).ready(function() {
     socket = io();
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
+    var unregisteredButton = $("#unregisteredVisitorsButton");
+    unregisteredButton.click(submitUnregisteredVisitors);
     socket.on("visits csv data", createDownloadableCSV);
     socket.on("anon csv data", createDownloadableCSV)
+    if()
 });
+
+function submitUnregisteredVisitors(){
+    var count = $("#unregisteredVisitorsCount").val();
+    socket.emit("save unregistered visit", count);
+}
 
 function createDownloadableCSV(CSV, fileName) {
     //Initialize file format you want csv or xls
