@@ -6,6 +6,7 @@ var http = require('http').Server(app);
 var path = require('path'); // node module for working with directory and file paths
 const fs = require('fs'); // node module for working with the filesystem
 var bodyParser = require('body-parser'); // node module middleware for parsing incoming requests before handing off to other server-side functions 
+const uuidv4 = require('uuid/v4'); // node modele for generating non colliding ids
 const { body, validationResult } = require('express-validator/check');
 var io = require('socket.io')(http);
 
@@ -317,6 +318,7 @@ io.on('connection', function(socket) {
                     fs.writeFile("visits.json", JSON.stringify(db), err => { // write updated entries to visits.json
                         if (err) throw err;
                     });
+                    io.emit("unregistered visits saved", count); // send success message to client
                 }
             } else {
                 console.log("Visits database is empty. Restore visits.json from backup and restart the server.")
@@ -377,22 +379,40 @@ io.on('connection', function(socket) {
                     // Prepare time of day
                     var rawTime = new Date(visits[i].visitorList[j].time);
                     var timeOfDay = rawTime.getHours() + ":" + rawTime.getMinutes();
-                    //prepare data from users database
-                    var user = users[(visits[i].visitorList[j].user - 1)];
-                    // Create row object representing one sign-in to Frenzone
-                    var row = {
-                        date: visits[i].date,
-                        userID: visits[i].visitorList[j].user,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        visitorCount: (visits[i].visitorList[j].accompanied + 1),
-                        researchProduction: visits[i].visitorList[j].researchProduction,
-                        personalProfessional: visits[i].visitorList[j].personalProfessional,
-                        dayOfWeek: dayOfWeek,
-                        timeOfDay: timeOfDay,
-                        memberType: user.memberType
+                    // Check if this is a real user or unregistered visitors logged with the admin console
+                    if (visits[i].visitorList[j].user != -1) { // If this visit is a regular user
+                        //prepare data from users database
+                        console.log(visits[i].visitorList[j].user);
+                        var user = users[(visits[i].visitorList[j].user - 1)];
+                        // Create row object representing one sign-in to Frenzone
+                        var row = {
+                            date: visits[i].date,
+                            userID: visits[i].visitorList[j].user,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            visitorCount: (visits[i].visitorList[j].accompanied + 1),
+                            researchProduction: visits[i].visitorList[j].researchProduction,
+                            personalProfessional: visits[i].visitorList[j].personalProfessional,
+                            dayOfWeek: dayOfWeek,
+                            timeOfDay: timeOfDay,
+                            memberType: user.memberType
+                        }
+                        visitsArray.push(row);
+                    } else { // Else this visit was added by admin to account for unregistered users
+                        var row = {
+                            date: visits[i].date,
+                            userID: -1,
+                            firstName: "",
+                            lastName: "",
+                            visitorCount: visits[i].visitorList[j].accompanied,
+                            researchProduction: "",
+                            personalProfessional: "",
+                            dayOfWeek: dayOfWeek,
+                            timeOfDay: timeOfDay,
+                            memberType: ""
+                        }
+                        visitsArray.push(row);
                     }
-                    visitsArray.push(row);
                 }
             }
 
@@ -552,10 +572,182 @@ io.on('connection', function(socket) {
     //Social
     socket.on("post gif", function(postCandidate) {
         //postCandidate contains URI, title, and skills
-        fs.readFile("social.json", (err, data) => {
+        fs.readFile("social.json", (err, unparsedData) => {
             if (err) throw err;
-            console.log(postCandidate);
+            var data = JSON.parse(unparsedData);
+            if (data.hasOwnProperty("posts")) { // Verify that posts property is initialized in database
+                var posts = data.posts;
+                var postsSortedByUser = data.postsSortedByUser;
+                // Determine postId of next post
+                var postNumber = posts.length;
+                // TKTKTK fetch current userId
+                var userId = 0;
+                // Create unique ID for file
+                var ID = uuidv4(); // Generate unique id
+                var fileType = postCandidate.URI.substring(11, 14); // Extract filetype from URI
+                var fileName = ID + "." + fileType;
+                var directory = __dirname + "/blablab_resources/";
+                // Save gif to a directory
+                var image = postCandidate.URI.split(';base64,').pop(); // Remove metadata from URI, leaving only image data
+                fs.writeFile((directory + fileName), image, { encoding: 'base64' }, function(err) {
+                    if (err) throw err;
+                    console.log('File created: ' + directory + fileName);
+                });
+                // Prepare post 
+                var preparedPost = {
+                    "postNumber": postNumber,
+                    "postId": ID,
+                    "fileName": fileName,
+                    "fileType": fileType,
+                    "dateCreated": new Date(),
+                    "userId": userId,
+                    "title": postCandidate.title,
+                    "skills": postCandidate.skills,
+                }
+                posts.push(preparedPost) // Add preparedPost to posts array
+                if (data.hasOwnProperty("postsSortedByUser")) { // Verify that postsSortedByUser property is initialized in database
+                    // Prepare entry for postsSortedByUser array
+                    var preparedPostsSortedByUser = null;
+                    // Check if user is in postsSortedByUser 
+                    if (postsSortedByUser[userId] != undefined) { // If this user is already present in the postsSortedByUser array
+                        preparedPostsSortedByUser = postsSortedByUser[userId]; // Copy prior data from database
+                        var newData = { "postNumber": postNumber, "postId": ID };
+                        preparedPostsSortedByUser.postsByThisUserId.push(newData); // Add this post to the array postsByThisUserId
+                    } else { // If user is not in postsSortedByUser, create their element
+                        preparedPostsSortedByUser = {
+                            "userId": userId,
+                            "postsByThisUserId": [{ "postNumber": postNumber, "postId": ID }]
+                        }
+                    }
+                    postsSortedByUser[userId] = preparedPostsSortedByUser; // Update PostsSortedByUser array
+                    // TKTKTK sometimes social.json gets wiped out. this function should only execute if prior functions successfully created prepared material
+                    fs.writeFile("social.json", JSON.stringify(data), err => { // write updated entry to social.json
+                        if (err) throw err;
+                    });
+                }
+            } else { console.log("Social.json is not initialized with any values. Maybe time to restore a backup.") }
+        })
+    });
+
+    socket.on("request posts", function(quantity) {
+        fs.readFile("social.json", (err, unparsedData) => {
+            if (err) throw err;
+            var data = JSON.parse(unparsedData);
+            if (data.hasOwnProperty("posts")) {
+                var posts = data.posts;
+                var postArray = [];
+                var noMorePosts = false;
+                for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
+                    var post = posts[i];
+                    //TKTKTK Fetch username from db.json
+                    // console.log(i);
+                    // console.log(post);
+                    //Get image
+                    var directory = __dirname + "/blablab_resources/";
+                    // TKTKTK BUFFER IS NOT SUCCESSFULLY ADDED TO packagedPost object
+                    // var base64Image;
+                    fs.readFile((directory + post.fileName), (err, file) => {
+                        if (err) throw err;
+                        getBase64Image(file)
+                            .then(base64Image => createPost)
+                            .then(packagedPost => emitPost);
+
+                        function getBase64Image(file) {
+                            return new Promise((resolve, reject) => { // Create new promise that returns
+                                console.log("getBase64Image called");
+                                // the async process
+                                var buffer = new Buffer(file);
+                                base64Image = buffer.toString('base64'); // convert image to base64
+                                if (base64Image) {
+                                    console.log("resolving " + base64Image.substring(0, 10));
+                                    resolve(base64Image);
+                                } else {
+                                    reject(Error("it didn't work"));
+                                }
+                            });
+                        }
+
+                        function createPost(image) {
+                            return new Promise((resolve, reject) => {
+                                console.log("createPost called");
+                                // Get metadata
+                                var packagedPost = {
+                                    "title": post.title,
+                                    "skills": post.skills,
+                                    "dateCreated": post.dateCreated.substring(0, 10),
+                                    "image": result
+                                }
+                                if (packagedPost.image != null) {
+                                    resolve(packagedPost);
+                                } else {
+                                    reject(Error("createPost failed"))
+                                }
+                            })
+                        }
+
+                        function failure(err) {
+                            throw err;
+                        };
+
+                        function emitPost(newPost) {
+                            console.log("emitPost called");
+                            console.log(result.substring(0, 10));
+                            // Send post to client
+                            io.emit('load post', newPost, noMorePosts);
+                        }
+                    });
+                };
+            }
+
+            // // If reached end of list, add boolean to emit
+            // if (i === 0) {
+            //     noMorePosts = true;
+            // }
         });
+    });
+
+    socket.on('refresh stats', () => {
+        // open visits db
+        fs.readFile("visits.json", (err, unparsedData) => {
+            if (err) throw err;
+            var visits = JSON.parse(unparsedData).visits;
+            // if last element of array is today
+            var today = newShortDate();
+            var ultimateElement = visits.pop();
+            console.log(ultimateElement.date);
+            if (ultimateElement.date === today) {
+                // count number of registered and unregistered visitors
+                var registeredVisitors = 0;
+                var unregisteredVisitors = 0;
+                var researchProduction = 0;
+                var personalProfessional = 0;
+                for (var i = 0; i < ultimateElement.visitorList.length; i++) {
+                    if (ultimateElement.visitorList[i].user >= 0) { // if the visitor is registered
+                        registeredVisitors++;
+                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                        researchProduction = researchProduction + ultimateElement.visitorList[i].researchProduction;
+                        personalProfessional = personalProfessional + ultimateElement.visitorList[i].personalProfessional;
+                    } else { // if the visitor is unregistered
+                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                    }
+                }
+                var stats = { // create a stats object and send it to the client
+                    "date": today,
+                    "registeredVisitors": registeredVisitors,
+                    "unregisteredVisitors": unregisteredVisitors,
+                    "researchProduction": Math.floor(researchProduction/registeredVisitors),
+                    "personalProfessional" : Math.floor(personalProfessional/registeredVisitors),
+                    "status": true // status: there have been visitors
+                }
+            } else { // send no visits yet today to client
+                var stats = {
+                    "date": today,
+                    "status": false // status: there have been no visitors yet today
+                }
+            }
+                console.log(stats);
+                io.emit("new stats", stats); // send today's stats to the client
+        })
     });
 
     // Disconnect
