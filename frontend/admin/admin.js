@@ -32,6 +32,8 @@ function loadStats(stats) {
         console.log("no visits so far today");
         $("#registeredVisitors").html(0);
         $("#unregisteredVisitors").html(0);
+        $("#avgResearchProduction").html("-");
+        $("#avgPersonalProfessional").html("-");
     } else {
         console.log("stats received");
         $("#registeredVisitors").html(stats.registeredVisitors);
