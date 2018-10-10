@@ -1,9 +1,13 @@
 html,
-body {
+body,
+#container {
+    max-width: 100%;
     width: 100%;
     height: 100%;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -27,31 +31,29 @@ input[type=button]:active {
     background-color: #579359;
 }
 
-#container>div {
-    margin-bottom: 20px;
-}
-
-input[type=number]{
+input[type=number] {
     width: 55px;
 
 }
 
-#unregisteredVisitorsContainer{
+
+#unregisteredVisitorsContainer {
+    flex-shrink: 0;
 }
 
-#unregisteredVisitorsContainer > div {
+#unregisteredVisitorsContainer>div {
     margin-right: 10px;
 }
 
-#unregisteredVisitorsContainer > input{
+#unregisteredVisitorsContainer>input {
     background-color: red;
 }
 
-#unregisteredVisitorsButton:hover{
+#unregisteredVisitorsButton:hover {
     background-color: #e30000;
 }
 
-#unregisteredVisitorsButton:active{
+#unregisteredVisitorsButton:active {
     background-color: #d10000;
 }
 
@@ -63,4 +65,109 @@ input[type=number]{
 
 h1 {
     font-size: 75px;
+    margin: 0px;
+}
+
+h2 {
+    margin: 0px;
+}
+
+p {
+    margin: 10px 0;
+}
+
+#container>div,
+#controlPanel>div {
+    margin-bottom: 20px;
+}
+
+#controlPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 900px;
+    padding: 20px 40px;
+    background-color: #f7f7f7;
+}
+
+#controlPanelHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+#realtimeStatsContainer {
+    width: 900px;
+    padding: 20px 40px;
+    background-color: #f7f7f7;
+}
+
+#realtimeStatsHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#refreshStatsButton {
+    font-size: 70px;
+    cursor: pointer;
+}
+
+#refreshStatsButton:hover {}
+
+#realtimeStatsTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#registeredVisitorsHeader {
+}
+
+#unregisteredVisitorsHeader {
+}
+
+td {
+    background-color: white;
+}
+
+tr {
+    height: 50px;
+    text-align: center;
+}
+
+tr > th{
+    color: white;
+    background-color: #8c63ae;
+}
+
+
+th {
+    height: 50px;
+    text-align: center;
+}
+
+table {
+    margin-top: 20px;
+}
+
+table,
+td,
+th {
+    border: 1px solid #d1d1d1;
+}
+
+#controlPanelBody {
+    display: flex;
+    flex-direction: row;
+}
+
+#reportsButtons {
+    display: flex;
+    align-items: flex-end;
+}
+
+#reportsButtons>input {
+    margin: 0 5px;
 }

@@ -7,16 +7,43 @@ $(document).ready(function() {
     socket = io();
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
-    var unregisteredButton = $("#unregisteredVisitorsButton");
-    unregisteredButton.click(submitUnregisteredVisitors);
+    $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
+    $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
     socket.on("visits csv data", createDownloadableCSV);
-    socket.on("anon csv data", createDownloadableCSV)
-    if()
+    socket.on("anon csv data", createDownloadableCSV);
+    socket.on("unregistered visits saved", alertUnregisteredVisitsSaved);
+    socket.on("new stats", loadStats);
+    $("#refreshStatsButton").click();
 });
 
-function submitUnregisteredVisitors(){
+function submitUnregisteredVisitors() {
     var count = $("#unregisteredVisitorsCount").val();
-    socket.emit("save unregistered visit", count);
+    if (count > 0) {
+        socket.emit("save unregistered visit", count);
+    } else {
+        alert("Pas capable d'ajouter " + count + " visites au base de données");
+    }
+}
+
+function loadStats(stats) {
+    console.log(stats);
+    $("#date").html(stats.date);
+    if (stats.status === false) {
+        console.log("no visits so far today");
+        $("#registeredVisitors").html(0);
+        $("#unregisteredVisitors").html(0);
+    } else {
+        console.log("stats received");
+        $("#registeredVisitors").html(stats.registeredVisitors);
+        $("#unregisteredVisitors").html(stats.unregisteredVisitors);
+        $("#avgResearchProduction").html(stats.researchProduction);
+        $("#avgPersonalProfessional").html(stats.personalProfessional);
+    }
+
+}
+
+function alertUnregisteredVisitsSaved(count) {
+    alert(count + " unregistered visits saved.");
 }
 
 function createDownloadableCSV(CSV, fileName) {

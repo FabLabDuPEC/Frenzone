@@ -11,17 +11,50 @@
 
 <body>
     <div id="container">
-        <div>
-            <h1>ADMINS ONLY STAY OUT!</h1>
+        <!--         <div>
+            <h1>ADMIN</h1>
+        </div> -->
+        <div id="realtimeStatsContainer">
+            <div id="realtimeStatsHeader">
+                <div>
+                    <h2>Statistiques d'aujourd'hui</h2>
+                    <div id="date"></div>
+                </div>
+                <div id="refreshStatsButton">🔄</div>
+            </div>
+            <div id="realtimeStatsBody">
+                <table id="realtimeStatsTable">
+                    <tr>
+                        <th id="registeredVisitorsHeader">Registered Visitors</th>
+                        <th id="unregisteredVisitorsHeader">Unregistered Visitors</th>
+                        <th>Research -> Production</th>
+                        <th>Personal -> Professional</th>
+                    </tr>
+                    <tr>
+                        <td id="registeredVisitors"></td>
+                        <td id="unregisteredVisitors"></td>
+                        <td id="avgResearchProduction"></td>
+                        <td id="avgPersonalProfessional"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div>
-            <input type="button" name="visits" id="visits" value="generate visits CSV">
-            <input type="button" name="anon" id="anon" value="generate anon CSV">
-        </div>
-        <div id="unregisteredVisitorsContainer">
-            <div><p>Ajouter les visiteurs non régistré</p></div>
-            <input type="number" name="unregisteredVisitorsCount" id="unregisteredVisitorsCount" value="0" min="0" max="100">
-            <input type="button" name="unregisteredVisitorsButton" id="unregisteredVisitorsButton" value="submit">
+        <div id="controlPanel">
+            <div id="controlPanelHeader"><h2>Controls</h2>
+            </div>
+            <div id="controlPanelBody">
+                <div id="unregisteredVisitorsContainer">
+                    <div>
+                        <p>Ajouter les visiteurs non régistré</p>
+                    </div>
+                    <input type="number" name="unregisteredVisitorsCount" id="unregisteredVisitorsCount" value="0" min="0" max="100">
+                    <input type="button" name="unregisteredVisitorsButton" id="unregisteredVisitorsButton" value="submit">
+                </div>
+                <div id="reportsButtons">
+                    <input type="button" name="visits" id="visits" value="generate visits CSV">
+                    <input type="button" name="anon" id="anon" value="generate anon CSV">
+                </div>
+            </div>
         </div>
     </div>
 </body>
