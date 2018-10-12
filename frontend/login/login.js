@@ -25,7 +25,7 @@ $(document).ready(function() {
             userID = user.userID;
             console.log(user.firstName + " " + user.lastName + " found");
             $("#phoneLookup").toggle();
-            $("#userLookup").prepend("<div id=\"welcome\">Bienvenue " + user.firstName + " </div>");
+            $("#userLookup").prepend("<div id=\"welcome\">Bienvenue " + user.firstName + " (membre #" + user.userID + ")</div>");
             // var ieme = "e";
             // var superIeme = ieme.sup();
             // if(user.visits.length === 0){
