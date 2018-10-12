@@ -58,10 +58,10 @@ function drawCompetencies() {
     }
 }
 
+var newUser = null;
 
-// TKTKTK should not trigger if required fields are empty.
-function saveUser() {
-    var form = document.getElementById("newUserForm"); // select form
+function savePersonalData() {
+    var form = document.getElementById("personalDataForm"); // select form
     // check if form is valid
     if (!form.checkValidity()) {
         console.log("fails")
@@ -76,35 +76,59 @@ function saveUser() {
         }
     });
     var today = new Date();
-    var dateCreated = today.toJSON().substring(0,10);
+    var dateCreated = today.toJSON().substring(0, 10);
     var phone = form.phone.value;
     var phoneNumberOnly = phone.replace(/\D/g, ''); // reduce phone to only numbers
-    var newUser = { // create new user object
+    newUser = { // create new user object
         "userID": "",
         "firstName": form.firstName.value,
         "lastName": form.lastName.value,
         "dateCreated": dateCreated,
         "phone": phoneNumberOnly,
         "email": form.email.value,
-        "birthDate": form.birthDate.value,
         "postalCode": form.postalCode.value,
         "memberType": form.memberType.value,
         "hadAlreadyVisitedALab": form.dejaFabLab.value,
-        "referral": form.commentEntendu.value,
         "skills": skills,
-        "visits": [dateCreated],
+        "visits": [],
         "projects": []
     };
-    // console.log("new user:");
-    // console.log(newUser);
+    showOtherQs();
+}
 
+function showOtherQs() {
+    $("#fabLabQuestions").toggle();
+    $("#anon").toggle();
+    if ($("#anon").is(":visible")) {
+        $('html, body').animate({
+            scrollTop: ($('#anon').offset().top)
+        }, 500);
+    } else {
+        $('html, body').animate({
+            scrollTop: ($('#fabLabQuestions').offset().top)
+        }, 500);
+    }
+}
+
+var anonData = null;
+
+function saveAnonData() {
+    var form = document.getElementById("anonDataForm")
     if (form.ethnicOrigin.value == "") {
         form.ethnicOrigin.value = "Quebec";
     };
 
-    var anonData = {
+    if (!form.checkValidity()) {
+        console.log("fails")
+        alert("Assurez-vous de répondre à toutes les questions mandatoires.");
+        return;
+    }
+    var today = new Date();
+    var dateCreated = today.toJSON().substring(0, 10);
+
+    anonData = {
         "dateCreated": dateCreated,
-        "expectations": form.expectations.value,
+        "birthDate": form.birthDate.value,
         "gender": form.gender.value,
         "maritalStatus": form.maritalStatus.value,
         "headOfHousehold": form.chefDeFam.value,
@@ -115,11 +139,11 @@ function saveUser() {
         "residence": form.residence.value,
         "activityAtPEC": form.activity.value
     };
-    // console.log("anon data:");
-    // console.log(anonData);
+    saveUser();
+}
 
-    // configure and send POST request to server
-    // var userData = [newUser, anonData];
+// configure and send POST request to server
+function saveUser() {
     var userData = [newUser, anonData];
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/saveUser"); // Configures the post request, with async default to true: XMLHttpRequest.open(method, url, async)
@@ -133,81 +157,10 @@ function saveUser() {
                 console.log(parsed.redirect); // Print server's redirect path
                 window.location.assign(parsed.redirect); // Redirect to new path  
             } else {
-                alert(document.getElementById("newUserForm").phone.value + " est déjà associé avec un membre. Inserez un autre numéro de téléphone et soumettre la formulaire de nouveau.")
+                alert(document.getElementById("personalDataForm").phone.value + " est déjà associé avec un membre. Inserez un autre numéro de téléphone et soumettre la formulaire de nouveau.")
+                showOtherQs();
             }
         }
     }
     xhr.send(JSON.stringify(userData)); // send post request to server
 }
-
-
-
-// var newObj = 
-// {  "name": "Nicholas", 
-//  "type": "regular member", 
-//  "projects": {
-//    "camera glasses" : {
-//      "skills" : ["Blender","Github", "CNC 3D forms", "electronics", "Eagle", "CNC PCB"],
-//      "dates worked on" : ["2015-12-01", "2016-01-31"]
-//    },
-//    "microscopic 3D reconstruction": {
-//      "skills" : ["microscopy", "motors", "Reality Capture", "photogrammetry", "laser cutting"],
-//      "dates worked on" : ["2018-04-15", "2018-05-01"]
-//    }
-//  }
-// }
-
-// console.log(newObj);
-
-// var stringObj = JSON.stringify(newObj);
-
-// localStorage.setItem("userLog", stringObj);
-// console.log("stored item");
-
-// var imported = localStorage.getItem("userLog");
-// console.log("userLog contains");
-// console.log(JSON.parse(imported));
-
-
-/*
-// ACCESSING PROPERTIES OF UNKNOWN OBJECT
-for (i in x){
-  x.elements[i].value 
-}
-
-
-// ITERATING THROUGH ARRAY NESTED IN JSON OBJECT
-var myObj, i, x = "";
-myObj = {
-    "name":"John",
-    "age":30,
-    "cars":[ "Ford", "BMW", "Fiat" ]
-};
-
-for (i in myObj.cars) {
-    x += myObj.cars[i] + "<br>";
-}
-document.getElementById("demo").innerHTML = x;
-
-
-
-// NESTED OBJECTS
-myObj = {
-    "name":"John",
-    "age":30,
-    "cars": {
-        "car1":"Ford",
-        "car2":"BMW",
-        "car3":"Fiat"
-    }
- } 
-
-
-// ARRAYS
-{
-"name":"John",
-"age":30,
-"cars":[ "Ford", "BMW", "Fiat" ]
-} 
-
-*/

@@ -149,10 +149,6 @@ input[type="radio"] {
     padding: 4px;
 }
 
-#newUserForm {
-    max-width: 700px;
-}
-
 #expectations {
     padding: 5px;
 }
@@ -169,6 +165,7 @@ input[type="radio"] {
 
 #main>form {
     float: left;
+    max-width: 700px;
 }
 
 #greenGradient {
@@ -302,11 +299,11 @@ input[type="radio"] {
     flex-shrink: 0;
 }
 
-#backButton:active{
+#backButton:active {
     background-color: #8897e2
 }
 
-#submit {
+.formButton {
     font-size: 45px;
     font-family: "Young Serif";
     background-color: #d3daff;
@@ -318,10 +315,14 @@ input[type="radio"] {
     transition: background-color .1s;
 }
 
-#submit:hover {
+.formButton:hover {
     background-color: #aab8ff;
 }
 
-#submit:active {
+.formButton:active {
     background-color: #8897e2;
+}
+
+#anon {
+    display: none;
 }

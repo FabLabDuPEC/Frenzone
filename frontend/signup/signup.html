@@ -16,61 +16,47 @@
                 <h1 id="headerTitle" class="flexRight">Inscrivez-vous au
               <br/>
             Fab Lab du PEC</h1>
-                <form id="newUserForm" class="flexLeft flexContainerColumn">
-                    <h3>Données personnelles</h3>
-                    <div class="question">
-                        <label for="firstName">Prénom</label>
-                        <input class="input" name="firstName" id="firstName" type="text" placeholder="Prenom" autocomplete="false" required>
-                    </div>
-                    <div class="question">
-                        <label for="lastName">Nom</label>
-                        <input class="input" name="lastName" id="lastName" type="text" placeholder="Nom" autocomplete="false" required>
-                    </div>
-                    <div class="question">
-                        <label for="phone">Téléphone</label>
-                        <input class="input" name="phone" id="phone" type="tel" placeholder="514-555-5555" autocomplete="false" required>
-                    </div>
-                    <div class="question">
-                        <label for="email">Addresse courriel</label>
-                        <input class="input" name="email" id="email" type="email" placeholder="fablabdupec@gmail.com" autcomplete="false" required>
-                    </div>
-                    <div class="question">
-                        <label for="birthDate">Date de naissance</label>
-                        <input class="input" name="birthDate" id="birthDate" type="date" required>
-                    </div>
-                    <div class="question">
-                        <label for="postalCode">Code Postale</label>
-                        <input class="input" name="postalCode" id="postalCode" type="text" placeholder="H2H 1G9" autcomplete="false" required pattern="[A-Z|a-z][0-9][A-Z|a-z][ -]?[0-9][A-Z|a-z][0-9]|[0-9]{5}">
-                        <!-- match canadian postal code or us zip code -->
-                    </div>
-                    <div class="question">
-                        <label for="memberType">Type de membre</label>
-                        <select name="memberType" id="memberType">
-                            <option value="normale">Normale</option>
-                            <option value="ado">Fab Lab ADOS</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="dejaFabLab">Avez-vous déjà visité un fab lab ou atelier communautaire?</label>
-                        <select name="dejaFabLab" id="dejaFabLab">
-                            <option value="ouiMontreal">Oui, à Montréal</option>
-                            <option value="ouiAilleur">Oui, hors de Montréal</option>
-                            <option selected="selected" value="non">Non</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="commentEntendu">Comment avez-vous connu le Fab Lab du PEC?</label>
-                        <select name="commentEntendu" id="commentEntendu">
-                            <option value="pec">Le PEC</option>
-                            <option value="ecole">À l'école</option>
-                            <option value="ami">Un(e) ami(e)</option>
-                            <option value="atelier">Un atelier</option>
-                            <option value="autreFabLab">Une autre Fab Lab</option>
-                            <option value="biblio">Une bibliothèque</option>
-                            <option value="article">Un article</option>
-                        </select>
-                    </div>
-                    <!-- <div class="question"> 
+                <form id="personalDataForm" class="flexLeft flexContainerColumn">
+                    <div id="fabLabQuestions">
+                        <h3>Informations personnelles</h3>
+                        <div class="question">
+                            <label for="firstName">Prénom</label>
+                            <input class="input" name="firstName" id="firstName" type="text" placeholder="Prenom" autocomplete="false" required>
+                        </div>
+                        <div class="question">
+                            <label for="lastName">Nom</label>
+                            <input class="input" name="lastName" id="lastName" type="text" placeholder="Nom" autocomplete="false" required>
+                        </div>
+                        <div class="question">
+                            <label for="phone">Téléphone</label>
+                            <input class="input" name="phone" id="phone" type="tel" placeholder="514-555-5555" autocomplete="false" required>
+                        </div>
+                        <div class="question">
+                            <label for="email">Addresse courriel</label>
+                            <input class="input" name="email" id="email" type="email" placeholder="fablabdupec@gmail.com" autcomplete="false" required>
+                        </div>
+                        <div class="question">
+                            <label for="postalCode">Code Postal</label>
+                            <input class="input" name="postalCode" id="postalCode" type="text" placeholder="H2H 1G9" autcomplete="false" required pattern="[A-Z|a-z][0-9][A-Z|a-z][ -]?[0-9][A-Z|a-z][0-9]|[0-9]{5}">
+                            <!-- match canadian postal code or us zip code -->
+                        </div>
+                        <div class="question">
+                            <label for="memberType">Type de membre</label>
+                            <select name="memberType" id="memberType">
+                                <option value="nouveau">Nouveau membre du PEC (5 $)</option>
+                                <option value="deja">Déjà membre du PEC</option>
+                                <option value="ado">Fab Lab ADOS</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="dejaFabLab">Avez-vous déjà visité un fab lab ou un atelier communautaire?</label>
+                            <select name="dejaFabLab" id="dejaFabLab">
+                                <option value="ouiMontreal">Oui, à Montréal</option>
+                                <option value="ouiAilleur">Oui, hors de Montréal</option>
+                                <option selected="selected" value="non">Non</option>
+                            </select>
+                        </div>
+                        <!-- <div class="question"> 
                         <label for="profileVisible">Aimeriez vous que votre profil soit visibles aux autres membres du Fab Lab?<span class="tooltip">&#9432;
                                 <span class="tooltiptext tooltip-right">Si vous selectionner oui, d'autres utilisateurs vont pouvoir trouver uniquement 1) les noms et descriptions des projets que vous marquer"public," vos compétences, et votre nom. Nous partageons <span style="font-style: italic;">jamais</span> vos coordonnées.</span>
                             </span>
@@ -85,98 +71,104 @@
                         </div>
                     </div>
                 -->
-                    <h3>Mes Compétences</h3>
-                    <div class="question">
-                        <label for="competencies">Je suis autosuffisant a...</label>
-                        <div id="competencies" class="scrollbox">
+                        <h3>Mes Compétences</h3>
+                        <div class="question">
+                            <label for="competencies">Je suis autosuffisant avec les machines et procédés suivants...</label>
+                            <div id="competencies" class="scrollbox">
+                            </div>
                         </div>
+                        <input type="button" class="formButton" id="submitPersonalData" onclick="savePersonalData()" value="Confirmer">
                     </div>
-                    <div class="question">
-                        <h3>Statistiques anonymes pour le Pavillon d'Éducation Communautaire</h3>
-                        <p class="smallerText extraSpaceTop">La direction du PEC aimerait vous poser quelques questions de statisques démographiques afin de prouver l'efficacité de l'education communautaire au gouvernement et autres sources de subvention. Vos réponses aux prochaines questions sont sauvegarder separement de toutes donnés identifiant. Ces donnés vont être transferer à la direction du PEC en format entièrement anonyme et ne sont pas liés avec votre compte au Fab Lab. Le Lab ne s'interesse pas à ton salaire ni ton genre !</p>
+                </form>
+                <form id="anonDataForm" class="flexLeft flexContainerColumn">
+                    <div id="anon">
+                        <div class="question">
+                            <h3>Statistiques anonymes pour le PEC</h3>
+                            <p class="smallerText extraSpaceTop">Pour justifier sa programmation accessible, le PEC doit recueillir quelques infos des usagés afin d'offrir ce service. Vos réponses aux prochaines questions sont anonymes et seront stockées séparément de toutes données identifiantes. Ils ne sont pas liés avec votre compte Fab Lab.</p>
+                        </div>
+                        <div class="question">
+                            <label for="birthDate">Date de naissance</label>
+                            <input class="input" name="birthDate" id="birthDate" type="date" required>
+                        </div>
+                        <div class="question">
+                            <label for="gender">Quel est votre genre?</label>
+                            <select name="gender" id="gender">
+                                <option value="femme">Femme</option>
+                                <option value="homme">Homme</option>
+                                <option selected="selected" value="autre">Autre</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="maritalStatus">Quel est votre status sociale?</label>
+                            <select name="maritalStatus" id="maritalStatus">
+                                <option value="marie">Marié.e</option>
+                                <option value="celibataire" selected="selected">Celibataire</option>
+                                <option value="veuf/ve">Veu.f.ve</option>
+                                <option value="divorce">Divorcé.e</option>
+                                <option value="union libre">Union libre</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="chefDeFam">Êtes-vous presentement chef de famille monoparentale</label>
+                            <select name="chefDeFam" id="chefDeFam">
+                                <option value="oui">Oui</option>
+                                <option selected="selected" value="non">Non</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="ethnicOrigin">Origine ethnique si autre que québecoise</label>
+                            <input class="input" name="ethnicOrigin" id="ethnicOrigin" type="text" placeholder="..." autcomplete="false">
+                        </div>
+                        <div class="question">
+                            <label for="schoolLevel">Niveau de scolarité</label>
+                            <select name="schoolLevel" id="schoolLevel">
+                                <option value="primaire">Primaire</option>
+                                <option value="secondaire">Secondaire</option>
+                                <option value="collegiale">Collégiale</option>
+                                <option value="universitaire">Universitaire</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="workStatus">Que faites vous presentement?</label>
+                            <select name="workStatus" id="workStatus">
+                                <option value="accident">Accidenté de travail</option>
+                                <option value="chomeur">Chomeur</option>
+                                <option value="travailleur">Travailleur</option>
+                                <option value="etudiant">Étudiant</option>
+                                <option value="menageur">Ménageur</option>
+                                <option value="retraite">Retraité</option>
+                                <option selected="selected" value="sans emploi">Sans emploi</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="annualRevenue">Quel est votre revenue annuel</label>
+                            <select name="annualRevenue" id="annualRevenue">
+                                <option value="<4000">&lt;4 000$</option>
+                                <option value="4000-9000">4 000$ - 9 999$</option>
+                                <option value="9000-19000">10 000$ - 19 999$</option>
+                                <option value="11000-25000">20 000$ - 24 999$</option>
+                                <option value="25000+">25 000+ $</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="residence">Dans votre residence, êtes vous?</label>
+                            <select name="residence" id="residence">
+                                <option value=" proprietaire">Propriétaire</option>
+                                <option selected="selected" value="locataire">Locataire</option>
+                                <option value="HLM">HLM</option>
+                                <option value="membre">Membre</option>
+                                <option value="coop">Coop</option>
+                                <option value="chambrePension">Chambre/Pension</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label for="activity" class="hidden">Dans quel activité êtes-vous inscrite?</label>
+                            <select class="hidden" name="activity" id="activity">
+                                <option value="fab lab">Fab Lab</option>
+                            </select>
+                        </div>
+                        <input id="submit" class="formButton" type="button" onclick="saveAnonData()" value="Confirmer">
                     </div>
-                    <div class="question">
-                        <label for="expectations">Quels sont vos attentes façe à l'organisme?</label>
-                        <textarea class="input pec" name="expectations" id="expectations" placeholder="Au PEC j'attends à..." autocomplete="false" rows=3 cols=60></textarea>
-                    </div>
-                    <div class="question">
-                        <label for="gender">Quel est votre genre?</label>
-                        <select name="gender" id="gender">
-                            <option value="femme">Femme</option>
-                            <option value="homme">Homme</option>
-                            <option selected="selected" value="autre">Autre</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="maritalStatus">Quel est votre status sociale?</label>
-                        <select name="maritalStatus" id="maritalStatus">
-                            <option value="marié">Marié.e</option>
-                            <option value="celibataire">Celibataire</option>
-                            <option value="veuf/ve">Veu.f.ve</option>
-                            <option value="divorcé">Divorcé.e</option>
-                            <option value="union libre">Union libre</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="chefDeFam">Êtes-vous presentement chef de famille monoparentale</label>
-                        <select name="chefDeFam" id="chefDeFam">
-                            <option value="oui">Oui</option>
-                            <option selected="selected" value="non">Non</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="ethnicOrigin">Origine ethnique si autre que québecoise</label>
-                        <input class="input" name="ethnicOrigin" id="ethnicOrigin" type="text" placeholder="..." autcomplete="false">
-                    </div>
-                    <div class="question">
-                        <label for="schoolLevel">Niveau de scolarité</label>
-                        <select name="schoolLevel" id="schoolLevel">
-                            <option value="primaire">Primaire</option>
-                            <option value="secondaire">Secondaire</option>
-                            <option value="collégiale">Collégiale</option>
-                            <option value="universitaire">Universitaire</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="workStatus">Que faites vous presentement?</label>
-                        <select name="workStatus" id="workStatus">
-                            <option value="accident">Accidenté de travail</option>
-                            <option value="chomeur">Chomeur</option>
-                            <option selected="selected" value="travailleur">Travailleur</option>
-                            <option value="etudiant">Étudiant</option>
-                            <option value="menageur">Ménageur</option>
-                            <option value="retraite">Retraité</option>
-                            <option value="sans emploi">Sans emploi</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="annualRevenue">Quel est votre revenue annuel</label>
-                        <select name="annualRevenue" id="annualRevenue">
-                            <option value="-4000">&lt;4 000$</option>
-                            <option value="4000-9000">4 000$ - 9 999$</option>
-                            <option value="9000-19000">10 000$ - 19 999$</option>
-                            <option value="11000-25000">20 000$ - 24 999$</option>
-                            <option value="25000+">25 000+ $</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="residence">Dans votre residence, êtes vous?</label>
-                        <select name="residence" id="residence">
-                            <option value=" proprietaire">Propriétaire</option>
-                            <option value="locataire">Locataire</option>
-                            <option value="HLM">HLM</option>
-                            <option value="membre">Membre</option>
-                            <option value="coop">Coop</option>
-                            <option value="chambrePension">Chambre/Pension</option>
-                        </select>
-                    </div>
-                    <div class="question">
-                        <label for="activity" class="hidden">Dans quel activité êtes-vous inscrite?</label>
-                        <select class="hidden" name="activity" id="activity">
-                            <option value="fab lab">Fab Lab</option>
-                        </select>
-                    </div>
-                    <input id="submit" type="button" onclick="saveUser()" value="Confirmer">
                 </form>
             </div>
         </div>
