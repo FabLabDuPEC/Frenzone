@@ -1,0 +1,110 @@
+@font-face {
+    font-family: 'Young Serif';
+    src: url('resources/YoungSerif-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('resources/Work-Sans-1.6/fonts/webfonts/woff2/WorkSans-Regular.woff2')
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    font-size: 30px;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+#pageContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffff53;
+}
+
+#headerContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 100px;
+    font-family: "YoungSerif";
+    padding-bottom: 20px;
+}
+
+#headerLogo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+#feedContainer {
+    flex-grow: 1;
+    width: 80%;
+}
+
+.post {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.column1 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /*width: 40%;*/
+    flex-grow: 1;
+    padding: 5px;
+}
+
+.column2 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /*width: 40%;*/
+    flex-grow: 1;
+    padding: 5px;
+}
+
+.column2>* {
+    padding: 7px;
+}
+
+.imageContainer {
+    margin: 15px;
+}
+
+.postTitle {
+    width: 100%;
+    font-size: 40px;
+}
+
+.userName {
+    font-size: 25px;
+}
+
+.skills {
+    width: 100%;
+    flex-grow: 1;
+    font-size: 25px;
+}
+
+.center {
+    justify-content: center;
+}
+
+#final {
+    height: 100px;
+}

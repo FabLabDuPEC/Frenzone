@@ -15,9 +15,10 @@ $().ready(function() {
     const preview = document.getElementById("preview"); // select element where png will be drawn
     const canvas = document.getElementById("canvas");
     const cameraControls = $("#cameraControls");
+    const backButton = document.getElementById("backButton");
     const reset = $("#reset");
     const captionButton = document.getElementById("captionButton");
-    const postButton = $("#postButton");
+    var postButton = $("#postButton");
     var hueRange = $("#hue");
     const titleField = $("#titleField");
     const skillsField = $("#skillsField");
@@ -26,6 +27,8 @@ $().ready(function() {
     fillPreview("#FFF");
     $("#overlay").click(function() { $("#overlay").toggle() }); // Add listener to dismiss overlay
     $(captionContainer).toggle();
+    // $(captionButton).toggle();
+    $(backButton).toggle();
 
     // Initialize data: size and streaming status
     var streaming = false;
@@ -94,6 +97,7 @@ $().ready(function() {
         // Convert Canvas to PNG and draw to DOM  
         var data = canvas.toDataURL('image/png');
         picArray.push(data); // Push image to picArray
+        console.log("pushing picture to picArray");
         if (picArray.length === 1) { // Start slideshow
             slideshow();
         }
@@ -159,40 +163,48 @@ $().ready(function() {
     function makeGif() {
         currentFrame = -1;
         fillPreviewProcessingMsg();
-        gifshot.createGIF({
-            'frameDuration': Math.floor(gifInterval / 100),
-            'gifWidth': width,
-            "gifHeight": height,
-            'numFrames': 20,
-            'sampleInterval': 8,
-            'images': picArray
-        }, function(obj) {
-            if (!obj.error) {
-                var image = obj.image;
-                preview.setAttribute('src', image); // Set Preview element to new gif
-                stageGifForUpload(image);
-            } else { currentFrame = 0; } //If gif making fails, start the pic slideshow up again
-        });
+        if (picArray.length > 1) {
+            gifshot.createGIF({
+                'frameDuration': Math.floor(gifInterval / 100),
+                'gifWidth': width,
+                "gifHeight": height,
+                'numFrames': 20,
+                'sampleInterval': 8,
+                'images': picArray
+            }, function(obj) {
+                if (!obj.error) {
+                    var image = obj.image;
+                    preview.setAttribute('src', image); // Set Preview element to new gif
+                    // initializePostButton();
+                    stageImageForUpload(image);
+                } else { currentFrame = 0; } //If gif making fails, start the pic slideshow up again
+            });
+        } else if (picArray.length === 1) { // If there is only one image in picArray, post the png
+            preview.setAttribute('src', picArray[0]);
+            // initializePostButton();
+            stageImageForUpload(picArray[0]);
+        } else { console.log("Cannot make stage png or gif, picArray is empty.") };
     };
 
     var fileToUpload = "";
 
-    function stageGifForUpload(file) {
+    function stageImageForUpload(file) {
+        console.log("staging image");
+        fileToUpload = "";
         fileToUpload = file;
+        console.log(picArray);
     }
 
     function post() {
         var title = titleField.val();
         var skills = skillsField.val();
-
-        var post = {
+        var newPost = {
             "title": title,
             "skills": skills,
             "URI": fileToUpload
-        }
-        console.log("post created and about to upload");
-        console.log(post);
-        socket.emit('post gif', post);
+        };
+        console.log(newPost);
+        socket.emit('post gif', newPost);
     }
 
 
@@ -210,21 +222,34 @@ $().ready(function() {
         hueRange.focus(); // Move focus away from reset button (so that pressing spacebar does not "reset" again)
     })
 
+    var state = false; // State of the viewer: false = cameraControls state, true = captionContainer state
     $(captionButton).click(function() {
         if (picArray.length === 0) { // Do not allow user to proceed if no pics have been taken
             alert("take a picture before makinga gif");
         } else {
             makeGif();
-            // When caption button is pressed, hide camera container and show caption container
-            $(cameraContainer).toggle();
-            $(cameraControls).toggle();
-            $(captionContainer).toggle();
+            changeState();
         }
     });
 
-    postButton.click(function() {
-        post();
-    })
+    $(backButton).click(function() {
+        changeState();
+        currentFrame = 0;
+    });
+
+    function changeState() {
+        state = !state; // Swap state
+        if (state === false) { // If in camera view
+            postButton.unbind();
+        } else { // Else in caption view
+            postButton.click(post); // bind post function to post button
+        }
+        $(cameraContainer).toggle();
+        $(cameraControls).toggle();
+        $(captionButton).toggle(); // Swap which button is showing
+        $(backButton).toggle();
+        $(captionContainer).toggle();
+    }
 
     // Spacebar triggers Capture button
     $("body").keydown(spaceBarPressed);
