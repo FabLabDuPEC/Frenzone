@@ -630,6 +630,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on("request posts", function(quantity) {
+
         fs.readFile("social.json", (err, unparsedData) => {
             if (err) throw err;
             var data = JSON.parse(unparsedData);
@@ -644,20 +645,21 @@ io.on('connection', function(socket) {
                     // console.log(post);
                     //Get image
                     var directory = __dirname + "/blablab_resources/";
-                    // TKTKTK BUFFER IS NOT SUCCESSFULLY ADDED TO packagedPost object
-                    // var base64Image;
+                    // read the image file from disk
+                    //TKTKTK maybe the readfile should be put into the first promise too
                     fs.readFile((directory + post.fileName), (err, file) => {
                         if (err) throw err;
-                        getBase64Image(file)
-                            .then(base64Image => createPost)
-                            .then(packagedPost => emitPost);
+                        getBase64Image(file) // Convert file on disk to base64 representation
+                            .then(image => createPost(image)) // Package the base64 image and metadata into an object
+                            .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
+                            .catch(error => console.log(error)); // Catch and log errors
 
                         function getBase64Image(file) {
                             return new Promise((resolve, reject) => { // Create new promise that returns
                                 console.log("getBase64Image called");
                                 // the async process
                                 var buffer = new Buffer(file);
-                                base64Image = buffer.toString('base64'); // convert image to base64
+                                var base64Image = buffer.toString('base64'); // convert image to base64
                                 if (base64Image) {
                                     console.log("resolving " + base64Image.substring(0, 10));
                                     resolve(base64Image);
@@ -673,11 +675,14 @@ io.on('connection', function(socket) {
                                 // Get metadata
                                 var packagedPost = {
                                     "title": post.title,
+                                    "fileType": post.fileType,
                                     "skills": post.skills,
                                     "dateCreated": post.dateCreated.substring(0, 10),
-                                    "image": result
+                                    "image": image
                                 }
                                 if (packagedPost.image != null) {
+                                    console.log("resolving packaged post");
+                                    console.log(packagedPost.title);
                                     resolve(packagedPost);
                                 } else {
                                     reject(Error("createPost failed"))
@@ -685,13 +690,9 @@ io.on('connection', function(socket) {
                             })
                         }
 
-                        function failure(err) {
-                            throw err;
-                        };
-
                         function emitPost(newPost) {
                             console.log("emitPost called");
-                            console.log(result.substring(0, 10));
+                            console.log(newPost.title);
                             // Send post to client
                             io.emit('load post', newPost, noMorePosts);
                         }
@@ -735,8 +736,8 @@ io.on('connection', function(socket) {
                     "date": today,
                     "registeredVisitors": registeredVisitors,
                     "unregisteredVisitors": unregisteredVisitors,
-                    "researchProduction": Math.floor(researchProduction/registeredVisitors),
-                    "personalProfessional" : Math.floor(personalProfessional/registeredVisitors),
+                    "researchProduction": Math.floor(researchProduction / registeredVisitors),
+                    "personalProfessional": Math.floor(personalProfessional / registeredVisitors),
                     "status": true // status: there have been visitors
                 }
             } else { // send no visits yet today to client
@@ -745,8 +746,8 @@ io.on('connection', function(socket) {
                     "status": false // status: there have been no visitors yet today
                 }
             }
-                console.log(stats);
-                io.emit("new stats", stats); // send today's stats to the client
+            console.log(stats);
+            io.emit("new stats", stats); // send today's stats to the client
         })
     });
 
