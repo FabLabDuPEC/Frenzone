@@ -8,19 +8,25 @@ $().ready(function() {
         socket.emit('request posts', 3);
     }
 
-    socket.on('load posts', function(postArray, noMorePosts) {
+    socket.on('load post', (newPost, noMorePosts) => {
         // If all posts have been loaded, stop trying to load more posts
-        if (postArray.length === 0) {
-            noMorePostsMessage();
+        if (newPost === null) {
+            console.log("newPost is null");
+            // noMorePostsMessage();
         } else {
             // Create post DOM element
-            addPostToDOM(post.title, post.skills, post.dateCreated, post.image);
+            addPostToDOM(newPost.title, newPost.fileType, newPost.skills, newPost.dateCreated, newPost.image);
         }
     });
 
-    function addPostToDOM(title, skills, dateCreated, image) {
-        console.log("addPostToDOM");
-        console.log(image);
+    function addPostToDOM(title, fileType, skills, dateCreated, image) {
+        console.log("addPostToDOM called on " + title);
+        // Add file type to base 64 image string
+        if (fileType === "png") {
+            image = "data:image/png;base64," + image;
+        } else if (fileType === "gif") {
+            image = "data:image/gif;base64," + image;
+        } else { console.log("unknown filetype"); }
         // Initialize up DOM elements
         var post = $("<div class=\"post\"></div>");
         var column1 = $("<div class=\"column1\"></div>");
@@ -40,7 +46,7 @@ $().ready(function() {
         column1.append(imageContainer);
         post.append(column1, column2);
         // Append post to DOM
-        $("#feedContainer").append(post); // Add to DOM
+        $("#feedContainer").prepend(post); // Add to DOM
     }
 
     function noMorePostsMessage() {
