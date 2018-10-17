@@ -19,6 +19,12 @@ $().ready(function() {
         }
     });
 
+    socket.on('load postArray', (postArray, noMorePosts) => {
+        for (var i = (postArray.length - 1); i >= 0; i--) {
+            addPostToDOM(postArray[i].title, postArray[i].fileType, postArray[i].skills, postArray[i].dateCreated, postArray[i].image)
+        }
+    })
+
     function addPostToDOM(title, fileType, skills, dateCreated, image) {
         console.log("addPostToDOM called on " + title);
         // Add file type to base 64 image string

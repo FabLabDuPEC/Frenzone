@@ -636,52 +636,56 @@ io.on('connection', function(socket) {
             var data = JSON.parse(unparsedData);
             if (data.hasOwnProperty("posts")) {
                 var posts = data.posts;
-                var postArray = [];
                 var noMorePosts = false;
                 for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
                     var post = posts[i];
                     //TKTKTK Fetch username from db.json
-                    // console.log(i);
-                    // console.log(post);
+                    console.log("PROCESSING " + i);
+                    console.log(post.title);
                     //Get image
                     var directory = __dirname + "/blablab_resources/";
                     // read the image file from disk
                     //TKTKTK maybe the readfile should be put into the first promise too
                     fs.readFile((directory + post.fileName), (err, file) => {
                         if (err) throw err;
-                        getBase64Image(file) // Convert file on disk to base64 representation
-                            .then(image => createPost(image)) // Package the base64 image and metadata into an object
+                        getBase64Image([file, post]) // Convert file on disk to base64 representation
+                            .then(data => createPost(data)) // Package the base64 image and metadata into an object
                             .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
                             .catch(error => console.log(error)); // Catch and log errors
 
-                        function getBase64Image(file) {
+                        function getBase64Image(data) {
                             return new Promise((resolve, reject) => { // Create new promise that returns
                                 console.log("getBase64Image called");
+                                var file = data[0];
+                                var postMetadata = data[1];
+                                console.log(postMetadata);
                                 // the async process
                                 var buffer = new Buffer(file);
                                 var base64Image = buffer.toString('base64'); // convert image to base64
                                 if (base64Image) {
-                                    console.log("resolving " + base64Image.substring(0, 10));
-                                    resolve(base64Image);
+                                    console.log("Resolving base64Image" + base64Image.substring(0, 10));
+                                    resolve([base64Image, postMetadata]);
                                 } else {
                                     reject(Error("it didn't work"));
                                 }
                             });
                         }
 
-                        function createPost(image) {
+                        function createPost(data) {
                             return new Promise((resolve, reject) => {
                                 console.log("createPost called");
+                                var image = data[0];
+                                var postMetadata = data[1];
                                 // Get metadata
                                 var packagedPost = {
-                                    "title": post.title,
-                                    "fileType": post.fileType,
-                                    "skills": post.skills,
-                                    "dateCreated": post.dateCreated.substring(0, 10),
+                                    "title": postMetadata.title,
+                                    "fileType": postMetadata.fileType,
+                                    "skills": postMetadata.skills,
+                                    "dateCreated": postMetadata.dateCreated.substring(0, 10),
                                     "image": image
                                 }
                                 if (packagedPost.image != null) {
-                                    console.log("resolving packaged post");
+                                    console.log("Resolving packaged post");
                                     console.log(packagedPost.title);
                                     resolve(packagedPost);
                                 } else {
