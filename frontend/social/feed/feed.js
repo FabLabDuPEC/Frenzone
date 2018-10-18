@@ -52,7 +52,7 @@ $().ready(function() {
         column1.append(imageContainer);
         post.append(column1, column2);
         // Append post to DOM
-        $("#feedContainer").prepend(post); // Add to DOM
+        $("#feedContainer").append(post); // Add to DOM
     }
 
     function noMorePostsMessage() {
@@ -65,16 +65,16 @@ $().ready(function() {
         }
     };
 
-    // Load more posts when at bottom of page
-    if (!allCaughtUp) { // As long as there are more posts to load
-        window.onscroll = function() {
-            var d = document.documentElement;
-            var offset = d.scrollTop + window.innerHeight;
-            var height = d.offsetHeight;
-            if (offset === height) {
-                console.log('At the bottom');
-                getPosts();
-            }
-        }
-    };
+    // // Load more posts when at bottom of page
+    // if (!allCaughtUp) { // As long as there are more posts to load
+    //     window.onscroll = function() {
+    //         var d = document.documentElement;
+    //         var offset = d.scrollTop + window.innerHeight;
+    //         var height = d.offsetHeight;
+    //         if (offset === height) {
+    //             console.log('At the bottom');
+    //             getPosts();
+    //         }
+    //     }
+    // };
 });

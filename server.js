@@ -630,28 +630,35 @@ io.on('connection', function(socket) {
     });
 
     socket.on("request posts", function(quantity) {
-
         fs.readFile("social.json", (err, unparsedData) => {
-            if (err) throw err;
-            var data = JSON.parse(unparsedData);
-            if (data.hasOwnProperty("posts")) {
-                var posts = data.posts;
-                var noMorePosts = false;
-                for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
-                    var post = posts[i];
-                    //TKTKTK Fetch username from db.json
-                    console.log("PROCESSING " + i);
-                    console.log(post.title);
-                    //Get image
-                    var directory = __dirname + "/blablab_resources/";
-                    // read the image file from disk
-                    //TKTKTK maybe the readfile should be put into the first promise too
-                    fs.readFile((directory + post.fileName), (err, file) => {
-                        if (err) throw err;
-                        getBase64Image([file, post]) // Convert file on disk to base64 representation
+                if (err) throw err;
+                var data = JSON.parse(unparsedData);
+                if (data.hasOwnProperty("posts")) {
+                    var posts = data.posts;
+                    var noMorePosts = false;
+                    for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
+                        //TKTKTK Fetch username from db.json
+                        var directory = __dirname + "/blablab_resources/";
+                        // read the image file from disk
+                        getFile([(directory + posts[i].fileName), posts[i]])
+                            .then(data => getBase64Image(data)) // Convert file on disk to base64 representation
                             .then(data => createPost(data)) // Package the base64 image and metadata into an object
                             .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
                             .catch(error => console.log(error)); // Catch and log errors
+
+                        function getFile(data) {
+                            return new Promise((resolve, reject) => {
+                                console.log("get file called");
+                                var filePath = data[0];
+                                var postMetadata = data[1];
+                                fs.readFile(filePath, (err, file) => {
+                                    if (err) throw err;
+                                    if (file != null) {
+                                        resolve([file, postMetadata]);
+                                    } else { reject("getFile failed"); }
+                                });
+                            });
+                        }
 
                         function getBase64Image(data) {
                             return new Promise((resolve, reject) => { // Create new promise that returns
@@ -700,7 +707,7 @@ io.on('connection', function(socket) {
                             // Send post to client
                             io.emit('load post', newPost, noMorePosts);
                         }
-                    });
+                    };
                 };
             }
 
@@ -708,7 +715,7 @@ io.on('connection', function(socket) {
             // if (i === 0) {
             //     noMorePosts = true;
             // }
-        });
+        );
     });
 
     socket.on('refresh stats', () => {
