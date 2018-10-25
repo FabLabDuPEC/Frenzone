@@ -372,10 +372,9 @@ io.on('connection', function(socket) {
             for (var i = 0; i < visits.length; i++) {
                 for (var j = 0; j < visits[i].visitorList.length; j++) {
                     // Prepare day of week
-                    var rawDate = visits[i].date.split('-');
-                    var visitDate = new Date(rawDate[0], rawDate[1], rawDate[2]);
-                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-                    var dayOfWeek = weekdays[visitDate.getDay()];
+                    var visitDate = new Date(visits[i].date); // create Date object from archive
+                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]; // create weekday array that corresponds to Date.getDay()
+                    var dayOfWeek = weekdays[visitDate.getDay()]; // derive day of week
                     // Prepare time of day
                     var rawTime = new Date(visits[i].visitorList[j].time);
                     var timeOfDay = rawTime.getHours() + ":" + rawTime.getMinutes();
@@ -636,15 +635,17 @@ io.on('connection', function(socket) {
                 if (data.hasOwnProperty("posts")) {
                     var posts = data.posts;
                     var noMorePosts = false;
+                    var emitArray = [];
                     for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
                         //TKTKTK Fetch username from db.json
                         var directory = __dirname + "/blablab_resources/";
                         // read the image file from disk
-                        getFile([(directory + posts[i].fileName), posts[i]])
+                        var x = getFile([(directory + posts[i].fileName), posts[i]])
                             .then(data => getBase64Image(data)) // Convert file on disk to base64 representation
                             .then(data => createPost(data)) // Package the base64 image and metadata into an object
-                            .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
+                            // .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
                             .catch(error => console.log(error)); // Catch and log errors
+                        emitArray.push(x);
 
                         function getFile(data) {
                             return new Promise((resolve, reject) => {
@@ -708,6 +709,7 @@ io.on('connection', function(socket) {
                             io.emit('load post', newPost, noMorePosts);
                         }
                     };
+                    emitArray.all(emitPost(data));
                 };
             }
 
