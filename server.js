@@ -372,10 +372,9 @@ io.on('connection', function(socket) {
             for (var i = 0; i < visits.length; i++) {
                 for (var j = 0; j < visits[i].visitorList.length; j++) {
                     // Prepare day of week
-                    var rawDate = visits[i].date.split('-');
-                    var visitDate = new Date(rawDate[0], rawDate[1], rawDate[2]);
-                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-                    var dayOfWeek = weekdays[visitDate.getDay()];
+                    var visitDate = new Date(visits[i].date); // create Date object from archive
+                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]; // create weekday array that corresponds to Date.getDay()
+                    var dayOfWeek = weekdays[visitDate.getDay()]; // derive day of week
                     // Prepare time of day
                     var rawTime = new Date(visits[i].visitorList[j].time);
                     var timeOfDay = rawTime.getHours() + ":" + rawTime.getMinutes();
@@ -630,28 +629,37 @@ io.on('connection', function(socket) {
     });
 
     socket.on("request posts", function(quantity) {
-
         fs.readFile("social.json", (err, unparsedData) => {
-            if (err) throw err;
-            var data = JSON.parse(unparsedData);
-            if (data.hasOwnProperty("posts")) {
-                var posts = data.posts;
-                var noMorePosts = false;
-                for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
-                    var post = posts[i];
-                    //TKTKTK Fetch username from db.json
-                    console.log("PROCESSING " + i);
-                    console.log(post.title);
-                    //Get image
-                    var directory = __dirname + "/blablab_resources/";
-                    // read the image file from disk
-                    //TKTKTK maybe the readfile should be put into the first promise too
-                    fs.readFile((directory + post.fileName), (err, file) => {
-                        if (err) throw err;
-                        getBase64Image([file, post]) // Convert file on disk to base64 representation
+                if (err) throw err;
+                var data = JSON.parse(unparsedData);
+                if (data.hasOwnProperty("posts")) {
+                    var posts = data.posts;
+                    var noMorePosts = false;
+                    var emitArray = [];
+                    for (var i = (posts.length - 1); i >= (posts.length - 1 - quantity) && i >= 0; i--) {
+                        //TKTKTK Fetch username from db.json
+                        var directory = __dirname + "/blablab_resources/";
+                        // read the image file from disk
+                        var x = getFile([(directory + posts[i].fileName), posts[i]])
+                            .then(data => getBase64Image(data)) // Convert file on disk to base64 representation
                             .then(data => createPost(data)) // Package the base64 image and metadata into an object
-                            .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
+                            // .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
                             .catch(error => console.log(error)); // Catch and log errors
+                        emitArray.push(x);
+
+                        function getFile(data) {
+                            return new Promise((resolve, reject) => {
+                                console.log("get file called");
+                                var filePath = data[0];
+                                var postMetadata = data[1];
+                                fs.readFile(filePath, (err, file) => {
+                                    if (err) throw err;
+                                    if (file != null) {
+                                        resolve([file, postMetadata]);
+                                    } else { reject("getFile failed"); }
+                                });
+                            });
+                        }
 
                         function getBase64Image(data) {
                             return new Promise((resolve, reject) => { // Create new promise that returns
@@ -700,7 +708,8 @@ io.on('connection', function(socket) {
                             // Send post to client
                             io.emit('load post', newPost, noMorePosts);
                         }
-                    });
+                    };
+                    emitArray.all(emitPost(data));
                 };
             }
 
@@ -708,7 +717,7 @@ io.on('connection', function(socket) {
             // if (i === 0) {
             //     noMorePosts = true;
             // }
-        });
+        );
     });
 
     socket.on('refresh stats', () => {
@@ -716,43 +725,71 @@ io.on('connection', function(socket) {
         fs.readFile("visits.json", (err, unparsedData) => {
             if (err) throw err;
             var visits = JSON.parse(unparsedData).visits;
-            // if last element of array is today
-            var today = newShortDate();
-            var ultimateElement = visits.pop();
-            console.log(ultimateElement.date);
-            if (ultimateElement.date === today) {
-                // count number of registered and unregistered visitors
-                var registeredVisitors = 0;
-                var unregisteredVisitors = 0;
-                var researchProduction = 0;
-                var personalProfessional = 0;
-                for (var i = 0; i < ultimateElement.visitorList.length; i++) {
-                    if (ultimateElement.visitorList[i].user >= 0) { // if the visitor is registered
-                        registeredVisitors++;
-                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
-                        researchProduction = researchProduction + ultimateElement.visitorList[i].researchProduction;
-                        personalProfessional = personalProfessional + ultimateElement.visitorList[i].personalProfessional;
-                    } else { // if the visitor is unregistered
-                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+            fs.readFile("db.json", (err, unparsedData) => {
+                if (err) throw err;
+                var members = JSON.parse(unparsedData).members;
+                // if last element of array is today
+                var today = newShortDate();
+                var ultimateElement = visits.pop();
+                console.log(ultimateElement.date);
+                if (ultimateElement.date === today) {
+                    // count number of registered and unregistered visitors
+                    var registeredVisitors = 0;
+                    var unregisteredVisitors = 0;
+                    var researchProduction = 0;
+                    var personalProfessional = 0;
+                    for (var i = 0; i < ultimateElement.visitorList.length; i++) {
+                        if (ultimateElement.visitorList[i].user >= 0) { // if the visitor is registered
+                            registeredVisitors++;
+                            unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                            researchProduction = researchProduction + ultimateElement.visitorList[i].researchProduction;
+                            personalProfessional = personalProfessional + ultimateElement.visitorList[i].personalProfessional;
+                        } else { // if the visitor is unregistered
+                            unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                        }
+                    }
+                    // Create list of today's logged visits: Member name, Accompany count, and time they logged in
+                    var loginsToday = []; // People who visited today
+                    for (var i = 0; i < ultimateElement.visitorList.length; i++) {
+                        if (ultimateElement.visitorList[i].user >= 0) { // If the visitor is registered
+                            var userData = members[ultimateElement.visitorList[i].user - 1];
+                            var visitor = {
+                                "firstName": userData.firstName,
+                                "lastName": userData.lastName,
+                                "time": ultimateElement.visitorList[i].time,
+                                "accompanied": ultimateElement.visitorList[i].accompanied
+                            };
+                            loginsToday.push(visitor);
+                        } else { // If the visitor is unregistered
+                            var visitor = {
+                                "firstName": "Unregistered",
+                                "lastName": "",
+                                "time": ultimateElement.visitorList[i].time,
+                                "accompanied": ultimateElement.visitorList[i].accompanied
+                            };
+                            loginsToday.push(visitor);
+                            console.log(visitor);
+                        }
+                    }
+                    var stats = { // create a stats object and send it to the client
+                        "date": today,
+                        "registeredVisitors": registeredVisitors,
+                        "unregisteredVisitors": unregisteredVisitors,
+                        "researchProduction": Math.floor(researchProduction / registeredVisitors),
+                        "personalProfessional": Math.floor(personalProfessional / registeredVisitors),
+                        "loginsToday": loginsToday,
+                        "status": true // status: there have been visitors
+                    }
+                } else { // send no visits yet today to client
+                    var stats = {
+                        "date": today,
+                        "status": false // status: there have been no visitors yet today
                     }
                 }
-                var stats = { // create a stats object and send it to the client
-                    "date": today,
-                    "registeredVisitors": registeredVisitors,
-                    "unregisteredVisitors": unregisteredVisitors,
-                    "researchProduction": Math.floor(researchProduction / registeredVisitors),
-                    "personalProfessional": Math.floor(personalProfessional / registeredVisitors),
-                    "status": true // status: there have been visitors
-                }
-            } else { // send no visits yet today to client
-                var stats = {
-                    "date": today,
-                    "status": false // status: there have been no visitors yet today
-                }
-            }
-            console.log(stats);
-            io.emit("new stats", stats); // send today's stats to the client
-        })
+                console.log(stats);
+                io.emit("new stats", stats); // send today's stats to the client
+            })
+        });
     });
 
     // Disconnect

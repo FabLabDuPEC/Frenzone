@@ -1,0 +1,7 @@
+*.json
+frontend/social/post/gifshot-master/.gitignore
+frontend/social/post/gifshot-master/.npmignore
+frontend/social/sandbox/
+frontend/social/webrtc_test_zone/
+node_modules/
+

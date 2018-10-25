@@ -97,6 +97,24 @@ p {
     width: 100%;
 }
 
+#visitorListContainer {
+    width: 900px;
+    padding: 20px 40px;
+    background-color: #f7f7f7;
+}
+
+#visitorListHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#visitorListTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
 #realtimeStatsContainer {
     width: 900px;
     padding: 20px 40px;
@@ -122,11 +140,9 @@ p {
     width: 100%;
 }
 
-#registeredVisitorsHeader {
-}
+#registeredVisitorsHeader {}
 
-#unregisteredVisitorsHeader {
-}
+#unregisteredVisitorsHeader {}
 
 td {
     background-color: white;
@@ -137,7 +153,7 @@ tr {
     text-align: center;
 }
 
-tr > th{
+tr>th {
     color: white;
     background-color: #8c63ae;
 }
