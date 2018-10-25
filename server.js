@@ -725,43 +725,71 @@ io.on('connection', function(socket) {
         fs.readFile("visits.json", (err, unparsedData) => {
             if (err) throw err;
             var visits = JSON.parse(unparsedData).visits;
-            // if last element of array is today
-            var today = newShortDate();
-            var ultimateElement = visits.pop();
-            console.log(ultimateElement.date);
-            if (ultimateElement.date === today) {
-                // count number of registered and unregistered visitors
-                var registeredVisitors = 0;
-                var unregisteredVisitors = 0;
-                var researchProduction = 0;
-                var personalProfessional = 0;
-                for (var i = 0; i < ultimateElement.visitorList.length; i++) {
-                    if (ultimateElement.visitorList[i].user >= 0) { // if the visitor is registered
-                        registeredVisitors++;
-                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
-                        researchProduction = researchProduction + ultimateElement.visitorList[i].researchProduction;
-                        personalProfessional = personalProfessional + ultimateElement.visitorList[i].personalProfessional;
-                    } else { // if the visitor is unregistered
-                        unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+            fs.readFile("db.json", (err, unparsedData) => {
+                if (err) throw err;
+                var members = JSON.parse(unparsedData).members;
+                // if last element of array is today
+                var today = newShortDate();
+                var ultimateElement = visits.pop();
+                console.log(ultimateElement.date);
+                if (ultimateElement.date === today) {
+                    // count number of registered and unregistered visitors
+                    var registeredVisitors = 0;
+                    var unregisteredVisitors = 0;
+                    var researchProduction = 0;
+                    var personalProfessional = 0;
+                    for (var i = 0; i < ultimateElement.visitorList.length; i++) {
+                        if (ultimateElement.visitorList[i].user >= 0) { // if the visitor is registered
+                            registeredVisitors++;
+                            unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                            researchProduction = researchProduction + ultimateElement.visitorList[i].researchProduction;
+                            personalProfessional = personalProfessional + ultimateElement.visitorList[i].personalProfessional;
+                        } else { // if the visitor is unregistered
+                            unregisteredVisitors = unregisteredVisitors + ultimateElement.visitorList[i].accompanied;
+                        }
+                    }
+                    // Create list of today's logged visits: Member name, Accompany count, and time they logged in
+                    var loginsToday = []; // People who visited today
+                    for (var i = 0; i < ultimateElement.visitorList.length; i++) {
+                        if (ultimateElement.visitorList[i].user >= 0) { // If the visitor is registered
+                            var userData = members[ultimateElement.visitorList[i].user - 1];
+                            var visitor = {
+                                "firstName": userData.firstName,
+                                "lastName": userData.lastName,
+                                "time": ultimateElement.visitorList[i].time,
+                                "accompanied": ultimateElement.visitorList[i].accompanied
+                            };
+                            loginsToday.push(visitor);
+                        } else { // If the visitor is unregistered
+                            var visitor = {
+                                "firstName": "Unregistered",
+                                "lastName": "",
+                                "time": ultimateElement.visitorList[i].time,
+                                "accompanied": ultimateElement.visitorList[i].accompanied
+                            };
+                            loginsToday.push(visitor);
+                            console.log(visitor);
+                        }
+                    }
+                    var stats = { // create a stats object and send it to the client
+                        "date": today,
+                        "registeredVisitors": registeredVisitors,
+                        "unregisteredVisitors": unregisteredVisitors,
+                        "researchProduction": Math.floor(researchProduction / registeredVisitors),
+                        "personalProfessional": Math.floor(personalProfessional / registeredVisitors),
+                        "loginsToday": loginsToday,
+                        "status": true // status: there have been visitors
+                    }
+                } else { // send no visits yet today to client
+                    var stats = {
+                        "date": today,
+                        "status": false // status: there have been no visitors yet today
                     }
                 }
-                var stats = { // create a stats object and send it to the client
-                    "date": today,
-                    "registeredVisitors": registeredVisitors,
-                    "unregisteredVisitors": unregisteredVisitors,
-                    "researchProduction": Math.floor(researchProduction / registeredVisitors),
-                    "personalProfessional": Math.floor(personalProfessional / registeredVisitors),
-                    "status": true // status: there have been visitors
-                }
-            } else { // send no visits yet today to client
-                var stats = {
-                    "date": today,
-                    "status": false // status: there have been no visitors yet today
-                }
-            }
-            console.log(stats);
-            io.emit("new stats", stats); // send today's stats to the client
-        })
+                console.log(stats);
+                io.emit("new stats", stats); // send today's stats to the client
+            })
+        });
     });
 
     // Disconnect

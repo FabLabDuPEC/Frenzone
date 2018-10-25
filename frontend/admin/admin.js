@@ -35,13 +35,34 @@ function loadStats(stats) {
         $("#avgResearchProduction").html("-");
         $("#avgPersonalProfessional").html("-");
     } else {
+        // Load total stats table
         console.log("stats received");
         $("#registeredVisitors").html(stats.registeredVisitors);
         $("#unregisteredVisitors").html(stats.unregisteredVisitors);
         $("#avgResearchProduction").html(stats.researchProduction);
         $("#avgPersonalProfessional").html(stats.personalProfessional);
+        // Load visitor table
+        loadVisits(stats.loginsToday);
     }
 
+}
+
+function loadVisits(loginsArray) {
+    if (loginsArray.length > 0) {
+        $("#emptyRow").hide();
+        $(".visitorRows").remove();
+        for (var i = 0; i < loginsArray.length; i++) {
+            var row = $('<tr>').addClass('visitorRows'); // create row
+            // create data cells
+            var name = $('<td>').addClass('nameCell').text(loginsArray[i].firstName + ' ' + loginsArray[i].lastName);
+            var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
+            var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0,5));
+            row.append(name, accompanied, time); // Append cells to row
+            $('#visitorListTable').append(row); // Append row to table;
+        }
+    } else {
+        $("#emptyRow").show() // If there are no logins
+    }
 }
 
 function alertUnregisteredVisitsSaved(count) {
