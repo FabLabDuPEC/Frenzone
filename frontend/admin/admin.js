@@ -84,7 +84,7 @@ function createDownloadableCSV(CSV, fileName) {
 
     //set the visibility hidden so it will not effect on your web-layout
     link.style = "visibility:hidden";
-    link.download = fileName + ".csv";
+    link.download = fileName;
 
     //this part will append the anchor tag and remove it after automatic click
     document.body.appendChild(link);
