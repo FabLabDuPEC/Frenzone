@@ -7,10 +7,12 @@ $(document).ready(function() {
     socket = io();
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
+    $("#members").on("click", () => { socket.emit("generate members CSV") });
     $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
     $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
     socket.on("visits csv data", createDownloadableCSV);
     socket.on("anon csv data", createDownloadableCSV);
+    socket.on("members csv data", createDownloadableCSV);
     socket.on("unregistered visits saved", alertUnregisteredVisitsSaved);
     socket.on("new stats", loadStats);
     $("#refreshStatsButton").click();
@@ -56,7 +58,7 @@ function loadVisits(loginsArray) {
             // create data cells
             var name = $('<td>').addClass('nameCell').text(loginsArray[i].firstName + ' ' + loginsArray[i].lastName);
             var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
-            var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0,5));
+            var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0, 5));
             row.append(name, accompanied, time); // Append cells to row
             $('#visitorListTable').append(row); // Append row to table;
         }

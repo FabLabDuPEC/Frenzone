@@ -327,6 +327,101 @@ io.on('connection', function(socket) {
     });
 
     //ADMIN
+    // Generate Members CSV
+    socket.on("generate members CSV", () => {
+        // 1. Fetch data from disk 
+        fs.readFile("db.json", processUsersDB);
+
+        function processUsersDB(err, data) {
+            if (err) throw err;
+            var usersDB = JSON.parse(data);
+            var members = usersDB.members;
+            createMembersTable(members)
+        }
+
+        // 2. Create table object
+        function createMembersTable(members) {
+            var membersTable = []; // Create members table
+            // Create a first element in the array, which contains the column names as values
+            var header = {
+                userID: "User ID",
+                firstName: "Prenom",
+                lastName: "Nom de famille",
+                phone: "Telephone",
+                email: "Adresse courriel",
+                postalCode: "Code postal",
+                visitCount: "Visites",
+                skills: "Competences",
+                hadAlreadyVisitedALab: "Avait deja visite un lab",
+                dateCreated: "Date cree",
+                memberType: "Type de membre"
+            };
+            membersTable.push(header);
+
+            for (var i = 0; i < members.length; i++) {
+                var user = members[i];
+                var row = {
+                    userID: user.userID,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    email: user.email,
+                    postalCode: user.postalCode,
+                    visitCount: user.visits.length,
+                    skills: user.skills,
+                    hadAlreadyVisitedALab: user.hadAlreadyVisitedALab,
+                    dateCreated: user.dateCreated,
+                    memberType: user.memberType
+                }
+                membersTable.push(row);
+            }
+            // 3. Convert table to CSV
+            var now = new Date();
+            var shortDate = now.toJSON().substring(0, 10);
+            convertJSONtoCSV(membersTable, shortDate);
+        }
+
+        function convertJSONtoCSV(JSONData, ReportTitle) {
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';
+
+            //1st loop is to extract each row
+            for (var i = 0; i < arrData.length; i++) {
+                var row = "";
+
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData[i]) {
+                    row += '"' + arrData[i][index] + '",';
+                }
+
+                row.slice(0, row.length - 1);
+
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {
+                alert("Invalid data");
+                return;
+            }
+
+            //Generate a file name
+            var fileName = "FabLab Rapport De Membres ";
+            //this will remove the blank-spaces from the title and replace it with an underscore
+            fileName += ReportTitle.replace(/ /g, "_");
+            fileName += ".csv";
+
+            //write file to server root directory
+            // fs.writeFile(fileName, CSV, err => {
+            //     if (err) throw err;
+            // });
+
+            //send CSV to client
+            io.emit("members csv data", CSV, fileName);
+        }
+    });
+
     //Generate Visits CSV
     socket.on("generate visits csv", function() {
         // 1. Fetch data from disk
