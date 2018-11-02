@@ -5,18 +5,45 @@ var accompanyingCount = null;
 var userID = null;
 $(document).ready(function() {
     socket = io();
+    $("#addRegisteredVisitorButton").on("click", submitRegisteredVisitors);
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
     $("#members").on("click", () => { socket.emit("generate members CSV") });
     $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
     $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
+    socket.on("new stats", loadStats);
+    socket.on("members list", loadMembers);
     socket.on("visits csv data", createDownloadableCSV);
     socket.on("anon csv data", createDownloadableCSV);
     socket.on("members csv data", createDownloadableCSV);
     socket.on("unregistered visits saved", alertUnregisteredVisitsSaved);
-    socket.on("new stats", loadStats);
     $("#refreshStatsButton").click();
+    socket.emit('load member list');
 });
+
+function loadMembers(membersList) {
+    console.log(membersList);
+    if (membersList != null) {
+        var select = $("#memberList");
+        var defaultOption = $("#default");
+        defaultOption.remove();
+        // Create DOM elements for all members
+        for (var i = 0; i < membersList.length; i++) {
+            // Create DOM element
+            var option = $("<option>").attr("value", membersList[i].userID).text(membersList[i].name);
+            // Append DOM elements to DOM select element
+            select.append(option);
+        }
+    }
+}
+
+function submitRegisteredVisitors() {
+    if ($("#default").length === 0) { // If the default option has already been removed from DOM, then Members list has been loaded
+        var memberID = $("#memberList").val(); // get userID
+        var accompanyingCount = $("#accompanyingCount").val();
+        socket.emit('save registered visit', memberID, accompanyingCount);
+    }
+}
 
 function submitUnregisteredVisitors() {
     var count = $("#unregisteredVisitorsCount").val();
@@ -28,7 +55,6 @@ function submitUnregisteredVisitors() {
 }
 
 function loadStats(stats) {
-    console.log(stats);
     $("#date").html(stats.date);
     if (stats.status === false) {
         console.log("no visits so far today");

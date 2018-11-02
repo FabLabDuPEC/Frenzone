@@ -172,7 +172,6 @@ io.on('connection', function(socket) {
     console.log('client connected');
     //LOGIN
     socket.on('phone lookup', function(phoneNumberOnly) {
-        console.log("socket received " + phoneNumberOnly);
         fs.readFile("db.json", (err, data) => {
             if (err) throw err;
             var database = JSON.parse(data);
@@ -180,8 +179,6 @@ io.on('connection', function(socket) {
                 var result = database.members.find(element => {
                     return element.phone == phoneNumberOnly;
                 });
-                console.log("lookup by phone returned:");
-                console.log(result);
                 if (result == undefined) {
                     io.emit("user not found", "not found");
                 } else {
@@ -200,7 +197,9 @@ io.on('connection', function(socket) {
         })
     })
     // add to visits.json
-    socket.on('save visit', function(count, userID, researchProduction, personalProfessional) {
+    socket.on('save visit', saveVisit);
+
+    function saveVisit(count, userID, researchProduction, personalProfessional) {
         count = parseInt(count, 10);
         console.log("accompanied by " + count);
         var now = new Date();
@@ -269,10 +268,11 @@ io.on('connection', function(socket) {
             } else {
                 console.log("Visits database is empty. Restore visits.json from backup and restart the server.")
             }
+            sendRefreshedStatsToAdminClient();
         });
-        sendRefreshedStatsToAdminClient();
-    });
+    }
 
+    /////////// ADMIN /////////////////////////////////
     // add unregistered visitors to visits.json
     socket.on('save unregistered visit', function(count) {
         var userId = -1;
@@ -326,10 +326,31 @@ io.on('connection', function(socket) {
             }
         });
     });
+    // Send member list to client so they can add visits by user
+    socket.on('load member list', () => {
+        fs.readFile("db.json", (err, data) => {
+            if (err) throw err;
+            var parsedDb = JSON.parse(data);
+            var members = parsedDb.members;
+            // Create list of members with user IDs
+            var membersList = [];
+            for (var i = 0; i < members.length; i++) {
+                var member = {
+                    "name": members[i].firstName + " " + members[i].lastName,
+                    "userID": members[i].userID
+                }
+                membersList.push(member);
+            };
+            socket.emit('members list', membersList);
+        });
+    });
 
-    /////////// ADMIN /////////////////////////////////
-    // send member list to client so they can add visits by user
-    socket.on('load member list', () => {});
+    // Save member visit from Admin interface, if they forgot to log in
+    //TKTKTKT
+    socket.on('save registered visit', function(userID, accompanyingCount) {
+        saveVisit(accompanyingCount, userID, 50, 50);
+        console.log(accompanyingCount, userID, 50, 50);
+    });
 
     //  When client requests stats refresh
     socket.on('refresh stats', () => {
@@ -348,7 +369,6 @@ io.on('connection', function(socket) {
                 // if last element of array is today
                 var today = newShortDate();
                 var ultimateElement = visits.pop();
-                console.log(ultimateElement.date);
                 if (ultimateElement.date === today) {
                     // count number of registered and unregistered visitors
                     var registeredVisitors = 0;
@@ -385,7 +405,6 @@ io.on('connection', function(socket) {
                                 "accompanied": ultimateElement.visitorList[i].accompanied
                             };
                             loginsToday.push(visitor);
-                            console.log(visitor);
                         }
                     }
                     var stats = { // create a stats object and send it to the client
@@ -403,7 +422,6 @@ io.on('connection', function(socket) {
                         "status": false // status: there have been no visitors yet today
                     }
                 }
-                console.log(stats);
                 io.emit("new stats", stats); // send today's stats to the clients
             })
         });
@@ -559,7 +577,6 @@ io.on('connection', function(socket) {
                     // Check if this is a real user or unregistered visitors logged with the admin console
                     if (visits[i].visitorList[j].user != -1) { // If this visit is a regular user
                         //prepare data from users database
-                        console.log(visits[i].visitorList[j].user);
                         var user = users[(visits[i].visitorList[j].user - 1)];
                         // Create row object representing one sign-in to Frenzone
                         var row = {
