@@ -11,9 +11,6 @@
 
 <body>
     <div id="container">
-        <!--         <div>
-            <h1>ADMIN</h1>
-        </div> -->
         <div id="realtimeStatsContainer">
             <div id="realtimeStatsHeader">
                 <div>
@@ -57,20 +54,24 @@
             <div id="controlPanelHeader">
                 <h2>Contrôles</h2>
             </div>
-            <div id="controlPanelBody">
-                <div id="unregisteredVisitorsContainer">
-                    <div>
-                        <p>Ajouter les visiteurs non régistré</p>
-                    </div>
-                    <input type="number" name="unregisteredVisitorsCount" id="unregisteredVisitorsCount" value="0" min="0" max="100">
-                    <input type="button" name="unregisteredVisitorsButton" id="unregisteredVisitorsButton" value="submit">
+            <div id="unregisteredVisitorsContainer">
+                <div>
+                    <p>Ajouter les visiteurs non régistré</p>
                 </div>
-                <div id="reportsButtons">
-                    <input type="button" name="members" id="members" value="generate members CSV">
-                    <input type="button" name="visits" id="visits" value="generate visits CSV">
-                    <input type="button" name="anon" id="anon" value="generate anon CSV">
-                </div>
+                <input type="number" name="unregisteredVisitorsCount" id="unregisteredVisitorsCount" value="0" min="0" max="100">
+                <input type="button" name="unregisteredVisitorsButton" id="unregisteredVisitorsButton" value="submit">
             </div>
+            <div id="addRegisteredVisitorContainer">
+                <p>Ajouter les visiteurs régistré</p>
+                <select id="memberList">
+                    <option id="default"></option>
+                </select>
+                <input type="button" name="addRegisteredVisitorButton" id="addRegisteredVisitorButton" value="submit">
+                <input type="number" name="accompanyingCount" id="accompanyingCount" value="0" min="0" max="100">
+            </div>
+            <input type="button" name="members" id="members" value="generate members CSV">
+            <input type="button" name="visits" id="visits" value="generate visits CSV">
+            <input type="button" name="anon" id="anon" value="generate anon CSV">
         </div>
     </div>
 </body>

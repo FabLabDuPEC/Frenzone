@@ -38,7 +38,7 @@ input[type=number] {
 
 
 #unregisteredVisitorsContainer {
-    flex-shrink: 0;
+    grid-column: 1/3;
 }
 
 #unregisteredVisitorsContainer>div {
@@ -82,20 +82,30 @@ p {
 }
 
 #controlPanel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 900px;
+/*    width: 900px;*/
     padding: 20px 40px;
     background-color: #f7f7f7;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, auto);
+    grid-gap: 10px;
 }
 
 #controlPanelHeader {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
+    grid-column: 1 / -1;
 }
+
+#registeredVisitorsHeader {}
+
+#addRegisteredVisitorContainer {
+    grid-column: 3/-1;
+}
+
+#memberList {
+    font-size: 1.5em;
+}
+
+#unregisteredVisitorsHeader {}
 
 #visitorListContainer {
     width: 900px;
@@ -140,9 +150,6 @@ p {
     width: 100%;
 }
 
-#registeredVisitorsHeader {}
-
-#unregisteredVisitorsHeader {}
 
 td {
     background-color: white;
@@ -172,16 +179,6 @@ table,
 td,
 th {
     border: 1px solid #d1d1d1;
-}
-
-#controlPanelBody {
-    display: flex;
-    flex-direction: row;
-}
-
-#reportsButtons {
-    display: flex;
-    align-items: flex-end;
 }
 
 #reportsButtons>input {
