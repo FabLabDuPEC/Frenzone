@@ -66,7 +66,7 @@ function savePersonalData() {
     // check if form is valid
     if (!form.checkValidity()) {
         console.log("fails")
-        alert("Assurez-vous de répondre à toutes les questions mandatoires.");
+        alert("Assurez-vous de répondre à toutes les questions obligatoire.");
         return;
     }
     var skills = []; // create skills array
