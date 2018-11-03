@@ -168,6 +168,12 @@ input[type="radio"] {
     max-width: 700px;
 }
 
+#backToMainMenu {
+    font-size: 60px;
+    padding: 25px;
+    cursor: pointer;
+}
+
 #greenGradient {
     min-height: 100%;
     padding: 0px;

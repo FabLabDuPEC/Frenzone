@@ -94,8 +94,15 @@ textarea {
 #rightSidebar {
     flex: 1;
     width: 35%;
+    display: flex;
+    flex-direction: column;
 }
 
+#backButton{
+    font-size:60px;
+    padding:25px;
+    cursor: pointer;
+}
 
 .question {
     padding: 4px;
@@ -168,7 +175,8 @@ textarea {
     background: radial-gradient(red, blue);
 }
 
-form, #whiteBox {
+form,
+#whiteBox {
     margin-top: 20px;
     border: solid;
     padding: 32px;
@@ -203,13 +211,6 @@ form, #whiteBox {
     width: 180px;
     align-self: center;
 }
-
-
-
-
-
-
-
 
 
 
