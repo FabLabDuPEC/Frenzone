@@ -10,6 +10,7 @@ $(document).ready(function() {
     $("#question1").toggle();
     $("#svg").toggle();
     constrainTelInput();
+    $("#backButton").click(()=>{window.history.back()});
     // TEMPORARY TKTKTK 
     var count = document.getElementById('count');
     var questionSubmit = document.getElementById("questionSubmit");

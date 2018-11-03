@@ -4,6 +4,7 @@
 $(document).ready(function() {
     drawCompetencies();
     constrainTelInput();
+    $("#backToMainMenu").click(() => { window.history.back() });
 });
 
 function showSignUp() {
