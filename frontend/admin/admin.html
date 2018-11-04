@@ -11,67 +11,60 @@
 
 <body>
     <div id="container">
-        <div id="realtimeStatsContainer">
+        <div id="header">frenzone</div>
+        <div id="realtimeStatsContainer" class="section">
             <div id="realtimeStatsHeader">
-                <div>
-                    <h2>Statistiques d'aujourd'hui</h2>
-                    <div id="date"></div>
-                </div>
+                <h2>Temps réel</h2>
+                <div id="date"></div>
                 <div id="refreshStatsButton">🔄</div>
             </div>
-            <div id="realtimeStatsBody">
-                <table id="realtimeStatsTable">
-                    <tr>
-                        <th id="registeredVisitorsHeader">Registered Visitors</th>
-                        <th id="unregisteredVisitorsHeader">Unregistered Visitors</th>
-                        <th>Research ↔ Production</th>
-                        <th>Personal ↔ Professional</th>
-                    </tr>
-                    <tr>
-                        <td id="registeredVisitors"></td>
-                        <td id="unregisteredVisitors"></td>
-                        <td id="avgResearchProduction"></td>
-                        <td id="avgPersonalProfessional"></td>
-                    </tr>
-                </table>
-                <div id="visitorStatsBody">
-                    <table id="visitorListTable">
-                        <tr>
-                            <th id="nameHeader">Nom</th>
-                            <th id="accompaniedHeader">Accompagné</th>
-                            <th>Time</th>
-                        </tr>
-                        <tr id="emptyRow">
-                            <td class="nameCell"></td>
-                            <td class="accompaniedCell"></td>
-                            <td class="timeCell"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+            <table id="realtimeStatsTable">
+                <tr>
+                    <th id="registeredVisitorsHeader">Registered Visitors</th>
+                    <th id="unregisteredVisitorsHeader">Unregistered Visitors</th>
+                    <th>Research ↔ Production</th>
+                    <th>Personal ↔ Professional</th>
+                </tr>
+                <tr>
+                    <td id="registeredVisitors"></td>
+                    <td id="unregisteredVisitors"></td>
+                    <td id="avgResearchProduction"></td>
+                    <td id="avgPersonalProfessional"></td>
+                </tr>
+            </table>
+            <table id="visitorListTable">
+                <tr>
+                    <th id="nameHeader">Nom</th>
+                    <th id="accompaniedHeader">Accompagné</th>
+                    <th>Time</th>
+                </tr>
+                <tr id="emptyRow">
+                    <td class="nameCell"></td>
+                    <td class="accompaniedCell"></td>
+                    <td class="timeCell"></td>
+                </tr>
+            </table>
         </div>
-        <div id="controlPanel">
+        <div id="controlPanel" class="section">
             <div id="controlPanelHeader">
                 <h2>Contrôles</h2>
             </div>
             <div id="unregisteredVisitorsContainer">
-                <div>
-                    <p>Ajouter les visiteurs non régistré</p>
-                </div>
-                <input type="number" name="unregisteredVisitorsCount" id="unregisteredVisitorsCount" value="0" min="0" max="100">
-                <input type="button" name="unregisteredVisitorsButton" id="unregisteredVisitorsButton" value="submit">
+                <p class="actionHeader">Ajouter les visiteurs non régistré</p>
+                <input type="number" name="unregisteredVisitorsCount" class="modify" id="unregisteredVisitorsCount" value="0" min="0" max="100">
+                <input type="button" name="unregisteredVisitorsButton" class="modify" id="unregisteredVisitorsButton" value="submit">
             </div>
             <div id="addRegisteredVisitorContainer">
-                <p>Ajouter les visiteurs régistré</p>
+                <p class="actionHeader">Ajouter les visiteurs régistré</p>
                 <select id="memberList">
                     <option id="default"></option>
                 </select>
-                <input type="button" name="addRegisteredVisitorButton" id="addRegisteredVisitorButton" value="submit">
-                <input type="number" name="accompanyingCount" id="accompanyingCount" value="0" min="0" max="100">
+                <input type="number" name="accompanyingCount" id="accompanyingCount" class="modify" value="0" min="0" max="100">
+                <input type="button" name="addRegisteredVisitorButton" class="modify" id="addRegisteredVisitorButton" value="submit">
             </div>
-            <input type="button" name="members" id="members" value="generate members CSV">
-            <input type="button" name="visits" id="visits" value="generate visits CSV">
-            <input type="button" name="anon" id="anon" value="generate anon CSV">
+            <input type="button" name="members" class="generate" id="members" value="generate members CSV">
+            <input type="button" name="visits" class="generate" id="visits" value="generate visits CSV">
+            <input type="button" name="anon" class="generate" id="anon" value="generate anon CSV">
         </div>
     </div>
 </body>
