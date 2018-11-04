@@ -393,6 +393,8 @@ io.on('connection', function(socket) {
                             var visitor = {
                                 "firstName": userData.firstName,
                                 "lastName": userData.lastName,
+                                "email": userData.email,
+                                "phone": userData.phone,
                                 "time": ultimateElement.visitorList[i].time,
                                 "accompanied": ultimateElement.visitorList[i].accompanied
                             };
