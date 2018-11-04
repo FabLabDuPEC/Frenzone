@@ -17,6 +17,10 @@ body {
     justify-content: center;
 }
 
+input{
+    -webkit-appearance: none;
+}
+
 /*
 #container {
     display: flex;
@@ -162,11 +166,17 @@ body {
     #container {
         width: 945px;
         max-width: 96%;
-        margin: 20px;
+        margin: 10px;
         margin-top: 0;
         display: flex;
         flex-direction: column;
     }
+
+    .section {
+    background-color: #f7f7f7;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+}
 
     #controlPanel {
         grid-template-columns: 1fr;
