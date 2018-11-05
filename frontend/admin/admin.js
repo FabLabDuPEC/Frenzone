@@ -22,7 +22,6 @@ $(document).ready(function() {
 });
 
 function loadMembers(membersList) {
-    console.log(membersList);
     if (membersList != null) {
         var select = $("#memberList");
         var defaultOption = $("#default");
@@ -83,9 +82,12 @@ function loadVisits(loginsArray) {
             var row = $('<tr>').addClass('visitorRows'); // create row
             // create data cells
             var name = $('<td>').addClass('nameCell').text(loginsArray[i].firstName + ' ' + loginsArray[i].lastName);
+            var email = "<div class='tooltip'>📧<span class='tooltiptext'>" + loginsArray[i].email + "</span></div>";
+            var phone = "<div class='tooltip'>📞<span class='tooltiptext'>" + loginsArray[i].phone + "</span></div>";
+            var contact = $('<td>').addClass('contactCell').html(email + phone);
             var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
             var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0, 5));
-            row.append(name, accompanied, time); // Append cells to row
+            row.append(name, contact, accompanied, time); // Append cells to row
             $('#visitorListTable').append(row); // Append row to table;
         }
     } else {
