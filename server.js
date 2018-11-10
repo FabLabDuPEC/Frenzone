@@ -116,9 +116,9 @@ app.get('/admin', (req, res) => {
     res.sendFile(__dirname + "/frontend/admin/admin.html");
 })
 
-app.get('/laser', (req, res) => {
-    res.sendFile(__dirname + "/frontend/laser/v2/index.html");
-});
+app.get('/bigscreen', (req, res) => {
+    res.sendFile(__dirname + "/frontend/bigScreen/index.html")
+})
 
 // SOCIAL 
 app.get('/capture1', (req, res) => {
@@ -269,7 +269,14 @@ io.on('connection', function(socket) {
                 console.log("Visits database is empty. Restore visits.json from backup and restart the server.")
             }
             sendRefreshedStatsToAdminClient();
+            drawToBigScreen();
         });
+    }
+
+    ////////// BIG SCREEN ////////////
+    function drawToBigScreen() {
+        console.log("draw to big screen");
+        io.emit("big screen login event");
     }
 
     /////////// ADMIN /////////////////////////////////
@@ -839,12 +846,26 @@ io.on('connection', function(socket) {
                         //TKTKTK Fetch username from db.json
                         var directory = __dirname + "/blablab_resources/";
                         // read the image file from disk
-                        var x = getFile([(directory + posts[i].fileName), posts[i]])
+                        var newPost = getFile([(directory + posts[i].fileName), posts[i]])
                             .then(data => getBase64Image(data)) // Convert file on disk to base64 representation
                             .then(data => createPost(data)) // Package the base64 image and metadata into an object
+                            .then(packagedPost => pushToArray(packagedPost)) // add post to emitarray
+                            // .then(resolve => emitTheArray)
                             // .then(packagedPost => emitPost(packagedPost)) // Emit the new post object to the client 
                             .catch(error => console.log(error)); // Catch and log errors
-                        emitArray.push(x);
+
+                        //this is not yet working
+                        // function emitTheArray() {
+                        //     return new Promise((resolve, reject) => {
+                        //         // if (emitArray.length > 2) {
+                        //             console.log(emitArray);
+                        //             console.log("emitting array");
+                        //             resolve(io.emit('load post array', newPostsArray));
+                        //         // } else { reject(new Error("could not emit array")) }
+                        //     }
+                        //     )
+                        // }
+
 
                         function getFile(data) {
                             return new Promise((resolve, reject) => {
@@ -901,14 +922,29 @@ io.on('connection', function(socket) {
                             })
                         }
 
-                        function emitPost(newPost) {
-                            console.log("emitPost called");
-                            console.log(newPost.title);
-                            // Send post to client
-                            io.emit('load post', newPost, noMorePosts);
+                        function pushToArray(packagedPost) {
+                            return new Promise((resolve, reject) => {
+                                console.log("pushToArray called");
+                                emitArray.push(packagedPost);
+                            })
                         }
+
                     };
-                    emitArray.all(emitPost(data));
+
+                    // function emitPost(newPost) { // emit post to client
+                    //     console.log("emitPost called");
+                    //     console.log(newPost.title);
+                    //     // Send post to client
+                    //     io.emit('load post', newPost, noMorePosts);
+                    // }
+
+                    function emitPostArray() { // emit post array to client.
+                        console.log("emitPostArray called");
+                        if (emitArray.length == quantity) {
+                            socket.emit('load post array', newPostsArray);
+                            resolve("emitted postArray");
+                        } else {}
+                    }
                 };
             }
 
