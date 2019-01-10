@@ -10,5 +10,5 @@ Membership management system for the Fab Lab du PEC.
 2. Install Node (http://nodejs.org)
 3. Navigate to the directory with the Terminal (e.g., `cd ~/Frenzone`)
 4. Run the command `npm install` to download the dependencies.
-5. Run `node` to spin up the server
+5. Run `node server` to spin up the server
 6. Open a web browser to localhost:8080
