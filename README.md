@@ -1,3 +1,4 @@
+![fab lab du pec](https://www.fablabdupec.com/wp-content/uploads/2018/10/fablab-du-pec-xx-gradient-no-drop.png)
 # Frenzone
 ## Français
 Frenzone est le système d'enregistrement pour les abonnés du Fab Lab du PEC. Frenzone inclu Blablab, le photomaton social pour les petites communautés. 
