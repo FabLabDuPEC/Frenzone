@@ -1,9 +1,9 @@
 # Frenzone
 ## Français
-Système d'enregistrement pour les abonnés du Fab Lab du PEC.
+Frenzone est le système d'enregistrement pour les abonnés du Fab Lab du PEC. Frenzone inclu Blablab, le photomaton social pour les petites communautés. 
 
 ## English
-Membership management system for the Fab Lab du PEC.
+Frenzone is the membership management system for the Fab Lab du PEC. Frenzone includes Blablab, the social photobooth for small communities.
 
 ### Getting started
 1. Download the repo and unzip its contents into a directory.
