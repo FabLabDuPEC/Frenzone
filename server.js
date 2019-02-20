@@ -325,7 +325,7 @@ io.on('connection', function(socket) {
                     fs.writeFile("visits.json", JSON.stringify(db), err => { // write updated entries to visits.json
                         if (err) throw err;
                     });
-                    io.emit("unregistered visits saved", count); // send success message to client
+                    socket.emit("unregistered visits saved", count); // send success message to client
                 }
                 sendRefreshedStatsToAdminClient();
             } else {
@@ -431,7 +431,7 @@ io.on('connection', function(socket) {
                         "status": false // status: there have been no visitors yet today
                     }
                 }
-                io.emit("new stats", stats); // send today's stats to the clients
+                socket.emit("new stats", stats); // send today's stats to the clients
             })
         });
     }
@@ -527,7 +527,7 @@ io.on('connection', function(socket) {
             // });
 
             //send CSV to client
-            io.emit("members csv data", CSV, fileName);
+            socket.emit("members csv data", CSV, fileName);
         }
     });
 
@@ -665,7 +665,7 @@ io.on('connection', function(socket) {
             // });
 
             //send CSV to client
-            io.emit("visits csv data", CSV, fileName);
+            socket.emit("visits csv data", CSV, fileName);
         }
     });
 
@@ -770,7 +770,7 @@ io.on('connection', function(socket) {
             // });
 
             // send CSV to client
-            io.emit("visits csv data", CSV, fileName);
+            socket.emit("visits csv data", CSV, fileName);
         }
     });
 
