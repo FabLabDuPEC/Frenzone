@@ -92,7 +92,8 @@ function savePersonalData() {
         "hadAlreadyVisitedALab": form.dejaFabLab.value,
         "skills": skills,
         "visits": [],
-        "projects": []
+        "projects": [],
+        "lastPaidMembership": dateCreated
     };
     showOtherQs();
 }
