@@ -35,7 +35,7 @@ $(document).ready(function() {
             //      $("#welcome").after("<div>Bienvenue pour la " + user.visits.length + superIeme + " fois.</div>")
             // }
 
-            // if the member must pay for membership again
+            // If the member must pay for membership again
             var lastPaidMembership = new Date(user.lastPaidMembership);
             var difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
             console.log(lastPaidMembership + " " + difference);
