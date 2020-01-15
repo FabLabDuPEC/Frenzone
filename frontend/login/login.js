@@ -42,7 +42,6 @@ $(document).ready(function() {
             if (difference > 365) {
                 alert("Merci de votre fidélité au Fab Lab. Il fait " + difference + " jours depuis votre dernier abonnement annuel au Fab Lab (30$). Réabonnez-vous aujourd’hui avec un membre de l’équipe lorsque vous passez à la caisse.");
             }
-
             // create accompanyQuestion div
             $("#phoneLookup").after("<div id=\"accompanyQuestion\" class=\"question\"><form id=\"accompanyingForm\" onSubmit=\"return false;\"><label for=\"accompanyCount\">Es-tu accompagné.e d\'autres personnes aujourd\'hui ?</label><br><input type=\"number\" id=\"accompanyCount\" name=\"accompanyCount\" value=\"0\" min=\"0\" max=\"99\" required autofocus><br><input id=\"submit\" type=\"submit\" value=\"suivant\"></form></div>");
             $("#accompanyCount").focus();

@@ -181,7 +181,7 @@ app.post('/login/lookupUser', (req, res) => {
 // Socket.io
 io.on('connection', function(socket) {
     console.log('client connected');
-    //LOGIN
+    //LOGIN 
     socket.on('phone lookup', function(phoneNumberOnly) {
         fs.readFile("db.json", (err, data) => {
             if (err) throw err;
