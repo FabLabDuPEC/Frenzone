@@ -83,15 +83,26 @@ function createUser(newUser, res) {
             var anondb = JSON.parse(data); // parse the db
             console.log("read anonPecDb.json");
             // console.log(anondb);
-            console.log("adding new user to anondb and writing to disk");
+            console.log("adding new user to anondb");
             anondb.anonData.push(res.locals.anonData)
+            console.log("shuffling anondb");
+            shuffleArray(anondb.anonData);
+            console.log("writing anondb to disk");
             fs.writeFile("anonPecDb.json", JSON.stringify(anondb), err => {
                 if (err) throw err;
             });
         });
         res.status(200).send({ message: "Success, wrote user to database.", redirect: "/login" }); // Send successful response and redirect to client
     };
-}
+};
+
+//Shuffle code for shuffling anon array https://javascript.info/task/shuffle
+function shuffleArray(array){
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
 
 function newShortDate() {
     var now = new Date();
