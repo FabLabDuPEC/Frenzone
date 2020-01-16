@@ -94,7 +94,9 @@ function loadVisits(loginsArray) {
             row.append(name, contact, accompanied, time); // Append cells to row
             $('#visitorListTable').append(row); // Append row to table;
         }
-        $(".payButton").on("click", () => console.log("paid"));
+        $(".payButton").on("click", () => {
+            console.log("sending membership payment update to server");
+        });
     } else {
         $("#emptyRow").show() // If there are no logins
     }
