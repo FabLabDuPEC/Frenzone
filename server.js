@@ -422,6 +422,12 @@ io.on('connection', function(socket) {
                                 "accompanied": ultimateElement.visitorList[i].accompanied,
                                 "userID": ultimateElement.visitorList[i].userID
                             };
+                            // Check if user owes membership dues, add to visitor listing if so
+                            let lastPaidMembership = new Date(userData.lastPaidMembership);
+                            let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                            if(difference > 365){
+                                visitor.lastPaidMembership = difference;
+                            }
                             loginsToday.push(visitor);
                         } else { // If the visitor is unregistered
                             var visitor = {
