@@ -419,7 +419,8 @@ io.on('connection', function(socket) {
                                 "email": userData.email,
                                 "phone": userData.phone,
                                 "time": ultimateElement.visitorList[i].time,
-                                "accompanied": ultimateElement.visitorList[i].accompanied
+                                "accompanied": ultimateElement.visitorList[i].accompanied,
+                                "userID": ultimateElement.visitorList[i].userID
                             };
                             loginsToday.push(visitor);
                         } else { // If the visitor is unregistered
