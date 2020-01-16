@@ -86,7 +86,7 @@ function loadVisits(loginsArray) {
             var email = "<div class='tooltip'>📧<span class='tooltiptext'>" + loginsArray[i].email + "</span></div>";
             var phone = "<div class='tooltip'>📞<span class='tooltiptext'>" + loginsArray[i].phone + "</span></div>";
             if (loginsArray[i].lastPaidMembership) {
-                var pay = "<div class='tooltip payButton' data-id='" + loginsArray[i].userID + "'>💸<span class='tooltiptext'>" + loginsArray[i].lastPaidMembership + " jours" + "</span></div>";
+                let pay = "<div class='tooltip payButton' data-userid='" + loginsArray[i].userID + "'>💸<span class='tooltiptext'>" + loginsArray[i].lastPaidMembership + " jours" + "</span></div>";
                 var contact = $('<td>').addClass('contactCell').html(email + phone + pay);
             } else { var contact = $('<td>').addClass('contactCell').html(email + phone); }
             var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
@@ -94,9 +94,12 @@ function loadVisits(loginsArray) {
             row.append(name, contact, accompanied, time); // Append cells to row
             $('#visitorListTable').append(row); // Append row to table;
         }
-        $(".payButton").on("click", () => {
-            console.log("sending membership payment update to server");
-        });
+        $(".payButton").click(pay);
+
+        function pay(callingObj){
+            console.log("User" + " " + callingObj.target.dataset.userid + " paid membership.");
+            socket.emit("admin membership paid", callingObj.target.dataset.userid)
+        };
     } else {
         $("#emptyRow").show() // If there are no logins
     }
