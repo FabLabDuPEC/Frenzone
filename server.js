@@ -359,6 +359,11 @@ io.on('connection', function(socket) {
                 }
                 membersList.push(member);
             };
+            membersList.sort(function(a, b) {
+                var textA = a.name.toUpperCase();
+                var textB = b.name.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
             socket.emit('members list', membersList);
         });
     });
