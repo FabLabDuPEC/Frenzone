@@ -387,7 +387,7 @@ io.on('connection', function(socket) {
                 // if last element of array is today
                 var today = newShortDate();
                 var ultimateElement = visits.pop();
-                if (ultimateElement.date === today) {
+                if (ultimateElement && ultimateElement.date === today) {
                     // count number of registered and unregistered visitors
                     var registeredVisitors = 0;
                     var unregisteredVisitors = 0;
