@@ -420,7 +420,7 @@ io.on('connection', function(socket) {
                                 "phone": userData.phone,
                                 "time": ultimateElement.visitorList[i].time,
                                 "accompanied": ultimateElement.visitorList[i].accompanied,
-                                "userID": ultimateElement.visitorList[i].userID
+                                "userID": userData.userID
                             };
                             // Check if user owes membership dues, add to visitor listing if so
                             let lastPaidMembership = new Date(userData.lastPaidMembership);
