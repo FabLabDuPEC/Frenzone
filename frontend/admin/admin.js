@@ -11,6 +11,7 @@ $(document).ready(function() {
     $("#members").on("click", () => { socket.emit("generate members CSV") });
     $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
     $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
+    $("")
     socket.on("new stats", loadStats);
     socket.on("members list", loadMembers);
     socket.on("visits csv data", createDownloadableCSV);
@@ -84,7 +85,10 @@ function loadVisits(loginsArray) {
             var name = $('<td>').addClass('nameCell').text(loginsArray[i].firstName + ' ' + loginsArray[i].lastName);
             var email = "<div class='tooltip'>📧<span class='tooltiptext'>" + loginsArray[i].email + "</span></div>";
             var phone = "<div class='tooltip'>📞<span class='tooltiptext'>" + loginsArray[i].phone + "</span></div>";
-            var contact = $('<td>').addClass('contactCell').html(email + phone);
+            if(loginsArray[i].lastPaidMembership){
+                var pay = "<div class='tooltip' data-id='"+ loginsArray[i].userID + "'>💸<span class='tooltiptext'>" + loginsArray[i].lastPaidMembership + " jours" + "</span></div>";
+            var contact = $('<td>').addClass('contactCell').html(email + phone + pay);
+            } else{var contact = $('<td>').addClass('contactCell').html(email + phone);}
             var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
             var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0, 5));
             row.append(name, contact, accompanied, time); // Append cells to row
