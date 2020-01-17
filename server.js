@@ -425,7 +425,7 @@ io.on('connection', function(socket) {
                             // Check if user owes membership dues, add to visitor listing if so
                             let lastPaidMembership = new Date(userData.lastPaidMembership);
                             let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
-                            if(difference > 365){
+                            if (difference > 365) {
                                 visitor.lastPaidMembership = difference;
                             }
                             loginsToday.push(visitor);
@@ -459,6 +459,20 @@ io.on('connection', function(socket) {
         });
     }
 
+    // Member has paid new membership 
+    socket.on("admin membership paid", (userID) => {
+        fs.readFile("db.json", (err, data) => {
+            if (err) throw err;
+            var usersDB = JSON.parse(data);
+            var members = usersDB.members;
+            console.log("member " + userID + " last paid membership updated to today, " + newShortDate());
+            members[userID - 1].lastPaidMembership = newShortDate(); // update user data
+            fs.writeFile("db.json", JSON.stringify(usersDB), err => { // write database to disk
+                if (err) throw err;
+            });
+        });
+    });
+
     // Generate Members CSV
     socket.on("generate members CSV", () => {
         // 1. Fetch data from disk 
@@ -468,7 +482,7 @@ io.on('connection', function(socket) {
             if (err) throw err;
             var usersDB = JSON.parse(data);
             var members = usersDB.members;
-            createMembersTable(members)
+            createMembersTable(members);
         }
 
         // 2. Create table object
