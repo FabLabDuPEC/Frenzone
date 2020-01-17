@@ -25,6 +25,7 @@ const webpush = require('web-push'); // web push
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
+console.log(privateVapidKey);
 // Replace with your email
 webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
 
@@ -40,6 +41,8 @@ app.post('/subscribe', (req, res) => {
     console.error(error.stack);
   });
 });
+
+// app.use(require('express-static')('./')); // I have a feeling this line from the tutorial will mess up the server as it is written
 
 /// END WEB PUSH /// 
 
