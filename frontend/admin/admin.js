@@ -99,6 +99,7 @@ function loadVisits(loginsArray) {
         function pay(callingObj){
             console.log("User" + " " + callingObj.target.dataset.userid + " paid membership.");
             socket.emit("admin membership paid", callingObj.target.dataset.userid)
+            callingObj.target.innerHTML = "💹";
         };
     } else {
         $("#emptyRow").show() // If there are no logins
