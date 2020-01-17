@@ -4,4 +4,4 @@ frontend/social/post/gifshot-master/.npmignore
 frontend/social/sandbox/
 frontend/social/webrtc_test_zone/
 node_modules/
-/.secrets
+/secrets
