@@ -2,7 +2,7 @@
 
 // acquire secrets
 const dotenv = require('dotenv').config({
-  path: './secrets/.env'
+    path: './secrets/.env'
 })
 
 const express = require('express'); // node module that routes http requests
@@ -30,19 +30,23 @@ console.log(privateVapidKey);
 webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
 
 // Your browser JavaScript will send an HTTP request to this endpoint with a PushSubscription object in the request body. You need the PushSubscription object in order to send a push notification via webpush.sendNotification().
+var subscription; // TKTKTKTK need to add these to an array instead of just store one at a time
 app.post('/subscribe', (req, res) => {
-  const subscription = req.body;
-  res.status(201).json({});
-  const payload = JSON.stringify({ title: 'test' });
+    subscription = req.body;
+    res.status(201).json({});
+    const payload = JSON.stringify({ title: 'test' });
 
-  console.log(subscription);
+    console.log(subscription);
 
-  webpush.sendNotification(subscription, payload).catch(error => {
-    console.error(error.stack);
-  });
+    webpush.sendNotification(subscription, payload).catch(error => {
+        console.error(error.stack);
+    });
+
+    // TKTKTK this in the login event when the server knows the person needs to pay membership
+    // webpush.sendNotification(subscription, JSON.stringify({ title: "person needs to pay", body: "gettem" })).catch(error => {
+    //     console.error(error.stack);
+    // });
 });
-
-// app.use(require('express-static')('./')); // I have a feeling this line from the tutorial will mess up the server as it is written
 
 /// END WEB PUSH /// 
 
