@@ -1,5 +1,10 @@
 "use strict";
 
+// acquire secrets
+const dotenv = require('dotenv').config({
+  path: './secrets/.env'
+})
+
 const express = require('express'); // node module that routes http requests
 const app = express(); // initialized express 
 var http = require('http').Server(app);
@@ -10,9 +15,33 @@ const uuidv4 = require('uuid/v4'); // node modele for generating non colliding i
 const { body, validationResult } = require('express-validator/check');
 var io = require('socket.io')(http);
 
+
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.text()); // support text encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
+/// WEB PUSH /// 
+const webpush = require('web-push'); // web push
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+// Replace with your email
+webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
+
+// Your browser JavaScript will send an HTTP request to this endpoint with a PushSubscription object in the request body. You need the PushSubscription object in order to send a push notification via webpush.sendNotification().
+app.post('/subscribe', (req, res) => {
+  const subscription = req.body;
+  res.status(201).json({});
+  const payload = JSON.stringify({ title: 'test' });
+
+  console.log(subscription);
+
+  webpush.sendNotification(subscription, payload).catch(error => {
+    console.error(error.stack);
+  });
+});
+
+/// END WEB PUSH /// 
 
 app.use(express.static("frontend")); // serve index.html, style.css, index.js, and other files from the path passed as a string
 
