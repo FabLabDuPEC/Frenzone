@@ -40,7 +40,18 @@ $(document).ready(function() {
             var difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
             console.log(lastPaidMembership + " " + difference);
             if (difference > 365) {
-                alert("Merci de votre fidélité au Fab Lab. Il fait " + difference + " jours depuis votre dernier abonnement annuel au Fab Lab (30$). Réabonnez-vous aujourd’hui avec un membre de l’équipe lorsque vous passez à la caisse.");
+                // alert("Merci de votre fidélité au Fab Lab. Il fait " + difference + " jours depuis votre dernier abonnement annuel au Fab Lab (30$). Réabonnez-vous aujourd’hui avec un membre de l’équipe lorsque vous passez à la caisse.");
+                $("<div>Merci de votre fidélité au Fab Lab. C’est le moment de renouveler votre abonnement annuel! Réabonnez-vous aujourd’hui avec un membre de l’équipe lorsque vous passez à la caisse.</div>").dialog({
+                    modal: true,
+                    buttons: {
+                        OK: function() {
+                            $(this).dialog("close");
+                        }
+                    },
+                    dialogClass: "no-close",
+                    draggable: false,
+                    minWidth: 600
+                });
             }
             // create accompanyQuestion div
             $("#phoneLookup").after("<div id=\"accompanyQuestion\" class=\"question\"><form id=\"accompanyingForm\" onSubmit=\"return false;\"><label for=\"accompanyCount\">Es-tu accompagné.e d\'autres personnes aujourd\'hui ?</label><br><input type=\"number\" id=\"accompanyCount\" name=\"accompanyCount\" value=\"0\" min=\"0\" max=\"99\" required autofocus><br><input id=\"submit\" type=\"submit\" value=\"suivant\"></form></div>");
