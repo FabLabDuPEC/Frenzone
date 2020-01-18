@@ -30,6 +30,7 @@ console.log(privateVapidKey);
 webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
 
 // Your browser JavaScript will send an HTTP request to this endpoint with a PushSubscription object in the request body. You need the PushSubscription object in order to send a push notification via webpush.sendNotification().
+/*
 var subscription; // TKTKTKTK need to add these to an array instead of just store one at a time
 app.post('/subscribe', (req, res) => {
     subscription = req.body;
@@ -47,6 +48,7 @@ app.post('/subscribe', (req, res) => {
     //     console.error(error.stack);
     // });
 });
+    */
 
 /// END WEB PUSH /// 
 
