@@ -22,7 +22,7 @@ $(document).ready(function() {
     socket.emit('load member list');
 });
 
-function loadMembers(membersList) {
+function loadMembers(membersList, totalActiveMembers) {
     if (membersList != null) {
         var select = $("#memberList");
         var defaultOption = $("#default");
@@ -34,6 +34,7 @@ function loadMembers(membersList) {
             // Append DOM elements to DOM select element
             select.append(option);
         }
+        $("#totalActiveMembers").html(totalActiveMembers);
     }
 }
 

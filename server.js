@@ -388,21 +388,29 @@ io.on('connection', function(socket) {
             var members = parsedDb.members;
             // Create list of members with user IDs
             var membersList = [];
+            var totalActiveMembers=0;
             for (var i = 0; i < members.length; i++) {
                 var member = {
                     "name": members[i].firstName + " " + members[i].lastName,
                     "userID": members[i].userID
                 }
                 membersList.push(member);
-            };
+                // Calculate total number of members
+                let lastPaidMembership = new Date(members[i].lastPaidMembership);
+                let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                if (difference > 365) {
+                    totalActiveMembers++;
+                };
+            }
             membersList.sort(function(a, b) {
                 var textA = a.name.toUpperCase();
                 var textB = b.name.toUpperCase();
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
-            socket.emit('members list', membersList);
+            socket.emit('members list', membersList, totalActiveMembers);
         });
     });
+
 
     // Save member visit from Admin interface, if they forgot to log in
     //TKTKTKT
