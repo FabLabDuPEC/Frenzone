@@ -390,7 +390,7 @@ io.on('connection', function(socket) {
             var members = parsedDb.members;
             // Create list of members with user IDs
             var membersList = [];
-            var totalActiveMembers=0;
+            var totalActiveMembers = 0;
             for (var i = 0; i < members.length; i++) {
                 var member = {
                     "name": members[i].firstName + " " + members[i].lastName,
@@ -539,6 +539,7 @@ io.on('connection', function(socket) {
                 userID: "User ID",
                 firstName: "Prenom",
                 lastName: "Nom de famille",
+                status: "Membership Status",
                 phone: "Telephone",
                 email: "Adresse courriel",
                 postalCode: "Code postal",
@@ -546,16 +547,26 @@ io.on('connection', function(socket) {
                 skills: "Competences",
                 hadAlreadyVisitedALab: "Avait deja visite un lab",
                 dateCreated: "Date cree",
+                lastPaidMembership:"Dernière date d'abonnement",
                 memberType: "Type de membre"
             };
             membersTable.push(header);
 
             for (var i = 0; i < members.length; i++) {
                 var user = members[i];
+                // Determine membership status
+                var membershipStatus;
+                let lastPaidMembership = new Date(user.lastPaidMembership);
+                let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                if (difference < 365) {
+                    membershipStatus = "Active"
+                } else { membershipStatus = "Inactive"; }
+                // Add row
                 var row = {
                     userID: user.userID,
                     firstName: user.firstName,
                     lastName: user.lastName,
+                    status: membershipStatus,
                     phone: user.phone,
                     email: user.email,
                     postalCode: user.postalCode,
@@ -563,6 +574,7 @@ io.on('connection', function(socket) {
                     skills: user.skills,
                     hadAlreadyVisitedALab: user.hadAlreadyVisitedALab,
                     dateCreated: user.dateCreated,
+                    lastPaidMembership: user.lastPaidMembership,
                     memberType: user.memberType
                 }
                 membersTable.push(row);
