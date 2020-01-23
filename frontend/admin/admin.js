@@ -5,6 +5,7 @@ var accompanyingCount = null;
 var userID = null;
 $(document).ready(function() {
     socket = io();
+    $(".payButton").on("click", () => console.log("paid"));
     $("#addRegisteredVisitorButton").on("click", submitRegisteredVisitors);
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
@@ -21,7 +22,7 @@ $(document).ready(function() {
     socket.emit('load member list');
 });
 
-function loadMembers(membersList) {
+function loadMembers(membersList, totalActiveMembers) {
     if (membersList != null) {
         var select = $("#memberList");
         var defaultOption = $("#default");
@@ -33,6 +34,7 @@ function loadMembers(membersList) {
             // Append DOM elements to DOM select element
             select.append(option);
         }
+        $("#totalActiveMembers").html(totalActiveMembers);
     }
 }
 
@@ -84,12 +86,24 @@ function loadVisits(loginsArray) {
             var name = $('<td>').addClass('nameCell').text(loginsArray[i].firstName + ' ' + loginsArray[i].lastName);
             var email = "<div class='tooltip'>📧<span class='tooltiptext'>" + loginsArray[i].email + "</span></div>";
             var phone = "<div class='tooltip'>📞<span class='tooltiptext'>" + loginsArray[i].phone + "</span></div>";
-            var contact = $('<td>').addClass('contactCell').html(email + phone);
+            if (loginsArray[i].lastPaidMembership) {
+                let pay = "<div class='tooltip payButton' data-userid='" + loginsArray[i].userID + "'>💸<span class='tooltiptext'>" + loginsArray[i].lastPaidMembership + " jours" + "</span></div>";
+                var contact = $('<td>').addClass('contactCell').html(email + phone + pay);
+            } else { var contact = $('<td>').addClass('contactCell').html(email + phone); }
             var accompanied = $('<td>').addClass('accompaniedCell').text(loginsArray[i].accompanied);
             var time = $('<td>').addClass('timeCell').text(new Date(loginsArray[i].time).toTimeString().substring(0, 5));
             row.append(name, contact, accompanied, time); // Append cells to row
             $('#visitorListTable').append(row); // Append row to table;
         }
+        $(".payButton").click(pay);
+
+        function pay(callingObj){
+            console.log("User" + " " + callingObj.target.dataset.userid + " paid membership.");
+            socket.emit("admin membership paid", callingObj.target.dataset.userid)
+            callingObj.target.innerHTML = "💹";
+            callingObj.target.classList.remove("payButton");
+            $(callingObj.target).unbind("click" );
+        };
     } else {
         $("#emptyRow").show() // If there are no logins
     }

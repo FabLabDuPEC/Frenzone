@@ -1,5 +1,10 @@
 "use strict";
 
+// acquire secrets
+const dotenv = require('dotenv').config({
+    path: './secrets/.env'
+})
+
 const express = require('express'); // node module that routes http requests
 const app = express(); // initialized express 
 var http = require('http').Server(app);
@@ -10,9 +15,42 @@ const uuidv4 = require('uuid/v4'); // node modele for generating non colliding i
 const { body, validationResult } = require('express-validator/check');
 var io = require('socket.io')(http);
 
+
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.text()); // support text encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
+/// WEB PUSH /// 
+const webpush = require('web-push'); // web push
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+console.log(privateVapidKey);
+// Replace with your email
+webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
+
+// Your browser JavaScript will send an HTTP request to this endpoint with a PushSubscription object in the request body. You need the PushSubscription object in order to send a push notification via webpush.sendNotification().
+/*
+var subscription; // TKTKTKTK need to add these to an array instead of just store one at a time
+app.post('/subscribe', (req, res) => {
+    subscription = req.body;
+    res.status(201).json({});
+    const payload = JSON.stringify({ title: 'test' });
+
+    console.log(subscription);
+
+    webpush.sendNotification(subscription, payload).catch(error => {
+        console.error(error.stack);
+    });
+
+    // TKTKTK this in the login event when the server knows the person needs to pay membership
+    // webpush.sendNotification(subscription, JSON.stringify({ title: "person needs to pay", body: "gettem" })).catch(error => {
+    //     console.error(error.stack);
+    // });
+});
+    */
+
+/// END WEB PUSH /// 
 
 app.use(express.static("frontend")); // serve index.html, style.css, index.js, and other files from the path passed as a string
 
@@ -97,11 +135,11 @@ function createUser(newUser, res) {
 };
 
 //Shuffle code for shuffling anon array https://javascript.info/task/shuffle
-function shuffleArray(array){
-  for (let i = array.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 };
 
 function newShortDate() {
@@ -181,7 +219,7 @@ app.post('/login/lookupUser', (req, res) => {
 // Socket.io
 io.on('connection', function(socket) {
     console.log('client connected');
-    //LOGIN
+    //LOGIN 
     socket.on('phone lookup', function(phoneNumberOnly) {
         fs.readFile("db.json", (err, data) => {
             if (err) throw err;
@@ -352,16 +390,29 @@ io.on('connection', function(socket) {
             var members = parsedDb.members;
             // Create list of members with user IDs
             var membersList = [];
+            var totalActiveMembers = 0;
             for (var i = 0; i < members.length; i++) {
                 var member = {
                     "name": members[i].firstName + " " + members[i].lastName,
                     "userID": members[i].userID
                 }
                 membersList.push(member);
-            };
-            socket.emit('members list', membersList);
+                // Calculate total number of members
+                let lastPaidMembership = new Date(members[i].lastPaidMembership);
+                let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                if (difference > 365) {
+                    totalActiveMembers++;
+                };
+            }
+            membersList.sort(function(a, b) {
+                var textA = a.name.toUpperCase();
+                var textB = b.name.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
+            socket.emit('members list', membersList, totalActiveMembers);
         });
     });
+
 
     // Save member visit from Admin interface, if they forgot to log in
     //TKTKTKT
@@ -387,7 +438,7 @@ io.on('connection', function(socket) {
                 // if last element of array is today
                 var today = newShortDate();
                 var ultimateElement = visits.pop();
-                if (ultimateElement.date === today) {
+                if (ultimateElement && ultimateElement.date === today) {
                     // count number of registered and unregistered visitors
                     var registeredVisitors = 0;
                     var unregisteredVisitors = 0;
@@ -414,8 +465,15 @@ io.on('connection', function(socket) {
                                 "email": userData.email,
                                 "phone": userData.phone,
                                 "time": ultimateElement.visitorList[i].time,
-                                "accompanied": ultimateElement.visitorList[i].accompanied
+                                "accompanied": ultimateElement.visitorList[i].accompanied,
+                                "userID": userData.userID
                             };
+                            // Check if user owes membership dues, add to visitor listing if so
+                            let lastPaidMembership = new Date(userData.lastPaidMembership);
+                            let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                            if (difference > 365) {
+                                visitor.lastPaidMembership = difference;
+                            }
                             loginsToday.push(visitor);
                         } else { // If the visitor is unregistered
                             var visitor = {
@@ -447,6 +505,20 @@ io.on('connection', function(socket) {
         });
     }
 
+    // Member has paid new membership 
+    socket.on("admin membership paid", (userID) => {
+        fs.readFile("db.json", (err, data) => {
+            if (err) throw err;
+            var usersDB = JSON.parse(data);
+            var members = usersDB.members;
+            console.log("member " + userID + " last paid membership updated to today, " + newShortDate());
+            members[userID - 1].lastPaidMembership = newShortDate(); // update user data
+            fs.writeFile("db.json", JSON.stringify(usersDB), err => { // write database to disk
+                if (err) throw err;
+            });
+        });
+    });
+
     // Generate Members CSV
     socket.on("generate members CSV", () => {
         // 1. Fetch data from disk 
@@ -456,7 +528,7 @@ io.on('connection', function(socket) {
             if (err) throw err;
             var usersDB = JSON.parse(data);
             var members = usersDB.members;
-            createMembersTable(members)
+            createMembersTable(members);
         }
 
         // 2. Create table object
@@ -467,6 +539,7 @@ io.on('connection', function(socket) {
                 userID: "User ID",
                 firstName: "Prenom",
                 lastName: "Nom de famille",
+                status: "Membership Status",
                 phone: "Telephone",
                 email: "Adresse courriel",
                 postalCode: "Code postal",
@@ -474,16 +547,26 @@ io.on('connection', function(socket) {
                 skills: "Competences",
                 hadAlreadyVisitedALab: "Avait deja visite un lab",
                 dateCreated: "Date cree",
+                lastPaidMembership:"Dernière date d'abonnement",
                 memberType: "Type de membre"
             };
             membersTable.push(header);
 
             for (var i = 0; i < members.length; i++) {
                 var user = members[i];
+                // Determine membership status
+                var membershipStatus;
+                let lastPaidMembership = new Date(user.lastPaidMembership);
+                let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                if (difference < 365) {
+                    membershipStatus = "Active"
+                } else { membershipStatus = "Inactive"; }
+                // Add row
                 var row = {
                     userID: user.userID,
                     firstName: user.firstName,
                     lastName: user.lastName,
+                    status: membershipStatus,
                     phone: user.phone,
                     email: user.email,
                     postalCode: user.postalCode,
@@ -491,6 +574,7 @@ io.on('connection', function(socket) {
                     skills: user.skills,
                     hadAlreadyVisitedALab: user.hadAlreadyVisitedALab,
                     dateCreated: user.dateCreated,
+                    lastPaidMembership: user.lastPaidMembership,
                     memberType: user.memberType
                 }
                 membersTable.push(row);

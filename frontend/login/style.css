@@ -98,9 +98,9 @@ textarea {
     flex-direction: column;
 }
 
-#backButton{
-    font-size:60px;
-    padding:25px;
+#backButton {
+    font-size: 60px;
+    padding: 25px;
     cursor: pointer;
 }
 
@@ -213,9 +213,35 @@ form,
 }
 
 
+/*Make Jquery UI elements font size smaller*/
 
+.ui-dialog * {
+    font-size: 70%;
+}
 
+.ui-widget-container {
+    border: none;
+}
 
+.ui-widget-content {
+    border: none ;
+}
+
+.ui-dialog-titlebar {
+    background: none !important;
+    border: none !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    border: none !important;
+}
+
+.ui-widget.ui-widget-content {
+    border-radius: 5px;
+    border: solid;
+    border-color: #000;
+    background: white;
+}
 
 
 /*
