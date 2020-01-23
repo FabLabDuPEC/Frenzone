@@ -17,7 +17,7 @@ body {
     justify-content: center;
 }
 
-input{
+input {
     -webkit-appearance: none;
 }
 
@@ -173,10 +173,10 @@ input{
     }
 
     .section {
-    background-color: #f7f7f7;
-    padding: 20px 20px;
-    margin-bottom: 20px;
-}
+        background-color: #f7f7f7;
+        padding: 20px 20px;
+        margin-bottom: 20px;
+    }
 
     #controlPanel {
         grid-template-columns: 1fr;
@@ -204,7 +204,7 @@ input{
 
 @media screen and (max-width: 550px) {
 
-    table{
+    table {
         font-size: 10px;
     }
 }
@@ -319,7 +319,7 @@ input[type=number] {
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
- 
+
     /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 1;
@@ -334,5 +334,6 @@ input[type=number] {
     width: 120px;
     top: 100%;
     left: 50%;
-    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+    margin-left: -60px;
+    /* Use half of the width (120/2 = 60), to center the tooltip */
 }
