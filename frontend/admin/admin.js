@@ -10,12 +10,14 @@ $(document).ready(function() {
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
     $("#members").on("click", () => { socket.emit("generate members CSV") });
+    $("#members").on("click", () => { socket.emit("generate google contacts CSV") });
     $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
     $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
     socket.on("new stats", loadStats);
     socket.on("members list", loadMembers);
     socket.on("visits csv data", createDownloadableCSV);
     socket.on("anon csv data", createDownloadableCSV);
+    socket.on("google csv data", createDownloadableCSV);
     socket.on("members csv data", createDownloadableCSV);
     socket.on("unregistered visits saved", alertUnregisteredVisitsSaved);
     $("#refreshStatsButton").click();
@@ -97,12 +99,12 @@ function loadVisits(loginsArray) {
         }
         $(".payButton").click(pay);
 
-        function pay(callingObj){
+        function pay(callingObj) {
             console.log("User" + " " + callingObj.target.dataset.userid + " paid membership.");
             socket.emit("admin membership paid", callingObj.target.dataset.userid)
             callingObj.target.innerHTML = "💹";
             callingObj.target.classList.remove("payButton");
-            $(callingObj.target).unbind("click" );
+            $(callingObj.target).unbind("click");
         };
     } else {
         $("#emptyRow").show() // If there are no logins
