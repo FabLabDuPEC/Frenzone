@@ -21,13 +21,12 @@ app.use(bodyParser.text()); // support text encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /// WEB PUSH /// 
-const webpush = require('web-push'); // web push
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+// const webpush = require('web-push'); // web push
+// const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
-console.log(privateVapidKey);
 // Replace with your email
-webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
+// webpush.setVapidDetails('mailto:equipe@fablabdupec.com', publicVapidKey, privateVapidKey);
 
 // Your browser JavaScript will send an HTTP request to this endpoint with a PushSubscription object in the request body. You need the PushSubscription object in order to send a push notification via webpush.sendNotification().
 /*
@@ -547,7 +546,7 @@ io.on('connection', function(socket) {
                 skills: "Competences",
                 hadAlreadyVisitedALab: "Avait deja visite un lab",
                 dateCreated: "Date cree",
-                lastPaidMembership:"Dernière date d'abonnement",
+                lastPaidMembership: "Dernière date d'abonnement",
                 memberType: "Type de membre"
             };
             membersTable.push(header);
@@ -866,6 +865,101 @@ io.on('connection', function(socket) {
 
             // send CSV to client
             socket.emit("visits csv data", CSV, fileName);
+        }
+    });
+
+    // Generate Google Contacts Import-format CSV
+    socket.on("generate google contacts CSV", () => {
+        // 1. Fetch data from disk 
+        fs.readFile("db.json", processUsersDB);
+
+        function processUsersDB(err, data) {
+            if (err) throw err;
+            var usersDB = JSON.parse(data);
+            var members = usersDB.members;
+            createGoogleContactsTable(members);
+        }
+
+        // 2. Create table object
+        function createGoogleContactsTable(members) {
+            var googleTable = []; // Create members table
+            // Create a first element in the array, which contains the column names as values
+            var header = {
+                fullName: "Name",
+                firstName: "Given Name",
+                lastName: "Family Name",
+                postalCode: "Location",
+                contactGroup: "Group Membership",
+                email: "E-mail 1 - Value",
+                phoneNumber: "Phone 1 - Value"
+            };
+            googleTable.push(header);
+
+            for (var i = 0; i < members.length; i++) {
+                var user = members[i];
+                // Determine membership status
+                var membershipStatus;
+                let lastPaidMembership = new Date(user.lastPaidMembership);
+                let difference = (new Date(newShortDate()) - lastPaidMembership) / (1000 * 60 * 60 * 24);
+                if (difference < 365) {
+                    membershipStatus = "Active"
+                } else { membershipStatus = "Inactive"; }
+                // Add row
+                var row = {
+                    fullName: user.firstName + " " + user.lastName,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    postalCode: user.postalCode,
+                    contactGroup: "Membres",
+                    email: user.email,
+                    phoneNumber: user.phone
+                }
+                googleTable.push(row);
+            }
+            // 3. Convert table to CSV
+            var now = new Date();
+            var shortDate = now.toJSON().substring(0, 10);
+            convertJSONtoCSV(googleTable, shortDate);
+        }
+
+        function convertJSONtoCSV(JSONData, ReportTitle) {
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';
+
+            //1st loop is to extract each row
+            for (var i = 0; i < arrData.length; i++) {
+                var row = "";
+
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData[i]) {
+                    row += '"' + arrData[i][index] + '",';
+                }
+
+                row.slice(0, row.length - 1);
+
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {
+                alert("Invalid data");
+                return;
+            }
+
+            //Generate a file name
+            var fileName = "FabLabMembres_Format_GoogleContacts ";
+            //this will remove the blank-spaces from the title and replace it with an underscore
+            fileName += ReportTitle.replace(/ /g, "_");
+            fileName += ".csv";
+
+            //write file to server root directory
+            // fs.writeFile(fileName, CSV, err => {
+            //     if (err) throw err;
+            // });
+
+            //send CSV to client
+            socket.emit("google csv data", CSV, fileName);
         }
     });
 

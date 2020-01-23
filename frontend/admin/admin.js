@@ -10,7 +10,7 @@ $(document).ready(function() {
     $("#visits").on("click", function() { socket.emit("generate visits csv") });
     $("#anon").on("click", function() { socket.emit("generate anon csv") });
     $("#members").on("click", () => { socket.emit("generate members CSV") });
-    $("#members").on("click", () => { socket.emit("generate google contacts CSV") });
+    $("#googleContacts").on("click", () => { socket.emit("generate google contacts CSV") });
     $("#unregisteredVisitorsButton").on("click", submitUnregisteredVisitors);
     $("#refreshStatsButton").on("click", () => socket.emit("refresh stats"));
     socket.on("new stats", loadStats);
