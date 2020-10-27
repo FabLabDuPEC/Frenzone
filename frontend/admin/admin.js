@@ -45,6 +45,7 @@ function submitRegisteredVisitors() {
         var memberID = $("#memberList").val(); // get userID
         var accompanyingCount = $("#accompanyingCount").val();
         socket.emit('save registered visit', memberID, accompanyingCount);
+        $("#accompanyingCount").val(0);
     }
 }
 
